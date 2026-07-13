@@ -21,19 +21,12 @@ import {
 // =====================================
 
 const firebaseConfig = {
-
-    apiKey: "YOUR_API_KEY",
-
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-
-    projectId: "YOUR_PROJECT_ID",
-
-    storageBucket: "YOUR_PROJECT.appspot.com",
-
-    messagingSenderId: "YOUR_SENDER_ID",
-
-    appId: "YOUR_APP_ID"
-
+  apiKey: "AIzaSyDnnAJXnXxHcSBfD46jmr0KGSR_KstOw9s",
+  authDomain: "metaescrow-c10f3.firebaseapp.com",
+  projectId: "metaescrow-c10f3",
+  storageBucket: "metaescrow-c10f3.firebasestorage.app",
+  messagingSenderId: "942736759161",
+  appId: "1:942736759161:web:952a4df03d2958fdb5b7a8"
 };
 
 
