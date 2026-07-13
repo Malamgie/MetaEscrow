@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Center | MetaEscrow</title>
+    <meta name="description" content="MetaEscrow Administrative Control Center.">
+    <link rel="canonical" href="https://www.metaescrow.com.ng/admin">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981', // Emerald
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        },
+                        accent: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 flex h-screen overflow-hidden selection:bg-brand-500 selection:text-white bg-gray-100">
+
+    <!-- Security Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-gray-900 z-[100] flex flex-col items-center justify-center transition-opacity duration-300">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-2xl shadow-brand-500/20 animate-pulse mb-6 border border-gray-700">
+            <i data-lucide="shield-check" class="text-white w-8 h-8"></i>
+        </div>
+        <div class="w-10 h-10 border-4 border-gray-700 border-t-brand-500 rounded-full animate-spin"></div>
+        <p class="mt-6 text-sm font-semibold text-gray-400 uppercase tracking-widest">Verifying Admin Credentials...</p>
+    </div>
+
+    <!-- Global Error Container (Fixed Top) -->
+    <div id="errorContainer" class="hidden fixed top-4 left-1/2 transform -translate-x-1/2 z-[90] bg-red-600 text-white px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 w-11/12 max-w-lg">
+        <i data-lucide="alert-triangle" class="w-5 h-5 flex-shrink-0"></i>
+        <div class="text-sm font-medium" id="errorMessage">System Error: Check connection.</div>
+    </div>
+
+    <!-- LEFT SIDEBAR -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-gray-950 text-gray-400 transition-transform -translate-x-full lg:translate-x-0 flex flex-col h-full border-r border-gray-800">
+        <!-- Branding -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-800 bg-black">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg mr-3">
+                <i data-lucide="shield-check" class="text-white w-5 h-5"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight text-white">Meta<span class="text-brand-500">Admin</span></span>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1.5 custom-scrollbar">
+            <p class="px-3 text-xs font-bold uppercase tracking-wider text-gray-600 mb-2">Overview</p>
+            <button data-target="adminDashboard" class="sidebar-link w-full flex items-center px-3 py-2.5 bg-brand-600/10 text-brand-400 rounded-xl font-medium transition-colors group">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard
+            </button>
+            <button data-target="analyticsCards" class="sidebar-link w-full flex items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <i data-lucide="bar-chart-2" class="w-5 h-5 mr-3"></i> Analytics
+            </button>
+
+            <p class="px-3 text-xs font-bold uppercase tracking-wider text-gray-600 mt-6 mb-2">Operations</p>
+            <button data-target="walletFundingTable" class="sidebar-link w-full flex justify-between items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <div class="flex items-center"><i data-lucide="wallet" class="w-5 h-5 mr-3"></i> Wallet Approvals</div>
+                <span class="metricPendingFinancials bg-brand-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full data-content hidden">0</span>
+            </button>
+            <button data-target="verificationQueue" class="sidebar-link w-full flex justify-between items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <div class="flex items-center"><i data-lucide="fingerprint" class="w-5 h-5 mr-3"></i> Verification (KYC)</div>
+                <span class="metricPendingVerifications bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full data-content hidden">0</span>
+            </button>
+            <button data-target="disputeTable" class="sidebar-link w-full flex justify-between items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <div class="flex items-center"><i data-lucide="scale" class="w-5 h-5 mr-3"></i> Disputes</div>
+                <span class="metricActiveDisputes bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full data-content hidden">0</span>
+            </button>
+
+            <p class="px-3 text-xs font-bold uppercase tracking-wider text-gray-600 mt-6 mb-2">Management</p>
+            <button data-target="userTable" class="sidebar-link w-full flex items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <i data-lucide="users" class="w-5 h-5 mr-3"></i> Users
+            </button>
+            <button data-target="escrowTable" class="sidebar-link w-full flex items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <i data-lucide="briefcase" class="w-5 h-5 mr-3"></i> Escrows
+            </button>
+            <button data-target="marketplaceTable" class="sidebar-link w-full flex items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <i data-lucide="store" class="w-5 h-5 mr-3"></i> Marketplace
+            </button>
+
+            <p class="px-3 text-xs font-bold uppercase tracking-wider text-gray-600 mt-6 mb-2">System</p>
+            <button data-target="auditLogTable" class="sidebar-link w-full flex items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <i data-lucide="clipboard-list" class="w-5 h-5 mr-3"></i> Audit Logs
+            </button>
+            <button data-target="notificationCenter" class="sidebar-link w-full flex items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <i data-lucide="bell-ring" class="w-5 h-5 mr-3"></i> Broadcasts
+            </button>
+            <button data-target="systemSettings" class="sidebar-link w-full flex items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
+                <i data-lucide="settings" class="w-5 h-5 mr-3"></i> Settings
+            </button>
+        </nav>
+
+        <!-- Admin Info & Logout -->
+        <div class="p-4 border-t border-gray-800 bg-gray-950">
+            <div class="flex items-center gap-3 mb-4 px-2">
+                <div class="w-10 h-10 rounded-full bg-brand-900 border border-brand-500 flex items-center justify-center text-brand-400 font-bold">A</div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-white truncate" id="adminNameDisplay">System Admin</p>
+                    <p class="text-[10px] font-medium text-brand-500 uppercase tracking-widest">Super Administrator</p>
+                </div>
+            </div>
+            <button id="logoutButton" data-action="logout" class="w-full flex items-center justify-center px-3 py-2 bg-gray-900 text-gray-400 hover:text-white hover:bg-red-900/50 hover:border-red-800 border border-transparent rounded-lg transition-colors text-sm font-medium">
+                <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> End Session
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="flex-1 flex flex-col lg:ml-64 w-full h-full overflow-hidden relative">
+        
+        <!-- TOP NAVIGATION -->
+        <header id="topNavbar" class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm">
+            <div class="flex items-center gap-4">
+                <button id="btnMobileMenu" class="lg:hidden p-2 -ml-2 text-gray-600 hover:text-gray-900 focus:outline-none rounded-lg focus:ring-2 focus:ring-brand-500">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <h1 class="font-bold text-xl text-gray-900 hidden sm:block" id="pageHeaderTitle">Control Center</h1>
+            </div>
+
+            <div class="flex items-center gap-4 sm:gap-6 w-full justify-end">
+                <!-- Global Search -->
+                <div class="relative w-full max-w-md hidden md:block">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                    <input type="text" id="searchInput" class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-full text-sm placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 bg-gray-50 transition-colors" placeholder="Search Users (MES-ID), Escrows, Transactions...">
+                </div>
+
+                <!-- Quick Actions -->
+                <button class="relative p-2 text-gray-400 hover:text-brand-600 transition-colors focus:outline-none rounded-full hover:bg-brand-50">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE MAIN CONTENT -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50/50 relative" id="adminContainer">
+            <div class="max-w-[1600px] mx-auto space-y-6">
+
+                <!-- ========================================== -->
+                <!-- PLATFORM HEALTH (Always visible on Dashboard)-->
+                <!-- ========================================== -->
+                <section class="admin-section" id="platformHealth">
+                    <div class="bg-gray-900 rounded-2xl p-6 shadow-xl border border-gray-800 text-white relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="flex items-center justify-between mb-6 relative z-10">
+                            <h2 class="text-lg font-bold flex items-center gap-2">
+                                <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-brand-500"></span></span>
+                                Platform Health
+                            </h2>
+                            <span class="text-xs font-mono text-gray-400" id="currentServerTime">Loading Time...</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 relative z-10">
+                            <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                                <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Database</p>
+                                <p class="text-sm font-semibold text-brand-400 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Healthy</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                                <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Auth (IAM)</p>
+                                <p class="text-sm font-semibold text-brand-400 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Operational</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                                <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Payments</p>
+                                <p class="text-sm font-semibold text-amber-400 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3"></i> Manual Mode</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                                <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Marketplace</p>
+                                <p class="text-sm font-semibold text-brand-400 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Online</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                                <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Escrow Engine</p>
+                                <p class="text-sm font-semibold text-brand-400 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Running</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700">
+                                <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Hosting</p>
+                                <p class="text-sm font-semibold text-accent-400 flex items-center gap-1"><i data-lucide="cloud" class="w-3 h-3"></i> Netlify Edge</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-3 rounded-xl border border-gray-700 lg:col-span-2">
+                                <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Last Backup</p>
+                                <p class="text-sm font-semibold text-gray-200 flex items-center gap-1"><i data-lucide="save" class="w-3 h-3"></i> Today, 02:30 AM WAT</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- DASHBOARD OVERVIEW (Section) -->
+                <!-- ========================================== -->
+                <section id="adminDashboard" class="admin-section block space-y-6">
+                    <!-- Analytics Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between group hover:border-brand-200 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Users</p>
+                                <div class="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:scale-110 transition-transform"><i data-lucide="users" class="w-4 h-4"></i></div>
+                            </div>
+                            <h3 class="text-3xl font-black text-gray-900 data-content hidden" id="metricTotalUsers">0</h3>
+                            <div class="data-skeleton bg-gray-200 rounded animate-pulse h-9 w-20"></div>
+                            <p class="text-xs text-brand-600 font-medium mt-2 flex items-center"><i data-lucide="trending-up" class="w-3 h-3 mr-1"></i> +12% this month</p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between group hover:border-amber-200 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Pending KYC</p>
+                                <div class="p-2 bg-amber-50 text-amber-600 rounded-lg group-hover:scale-110 transition-transform"><i data-lucide="fingerprint" class="w-4 h-4"></i></div>
+                            </div>
+                            <h3 class="text-3xl font-black text-gray-900 data-content hidden metricPendingVerifications">0</h3>
+                            <div class="data-skeleton bg-gray-200 rounded animate-pulse h-9 w-20"></div>
+                            <p class="text-xs text-amber-600 font-medium mt-2 flex items-center"><i data-lucide="alert-circle" class="w-3 h-3 mr-1"></i> Action Required</p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between group hover:border-brand-200 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Pending Finances</p>
+                                <div class="p-2 bg-brand-50 text-brand-600 rounded-lg group-hover:scale-110 transition-transform"><i data-lucide="banknote" class="w-4 h-4"></i></div>
+                            </div>
+                            <h3 class="text-3xl font-black text-gray-900 data-content hidden metricPendingFinancials">0</h3>
+                            <div class="data-skeleton bg-gray-200 rounded animate-pulse h-9 w-20"></div>
+                            <p class="text-xs text-brand-600 font-medium mt-2 flex items-center"><i data-lucide="clock" class="w-3 h-3 mr-1"></i> Awaiting approval</p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between group hover:border-red-200 transition-colors">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Active Disputes</p>
+                                <div class="p-2 bg-red-50 text-red-600 rounded-lg group-hover:scale-110 transition-transform"><i data-lucide="scale" class="w-4 h-4"></i></div>
+                            </div>
+                            <h3 class="text-3xl font-black text-red-600 data-content hidden metricActiveDisputes">0</h3>
+                            <div class="data-skeleton bg-gray-200 rounded animate-pulse h-9 w-20"></div>
+                            <p class="text-xs text-red-500 font-medium mt-2 flex items-center"><i data-lucide="alert-triangle" class="w-3 h-3 mr-1"></i> Requires mediation</p>
+                        </div>
+                    </div>
+
+                    <!-- Split Layout: Recent Activity & Quick Approvals -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Quick Approvals Queue -->
+                        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                                <h3 class="font-bold text-gray-900 flex items-center gap-2"><i data-lucide="inbox" class="w-4 h-4 text-brand-600"></i> Financial Priority Queue</h3>
+                            </div>
+                            <div class="p-0 overflow-x-auto" id="financialQueueContainer">
+                                <!-- Populated by admin.js. Skeletons for presentation. -->
+                                <table class="w-full text-left whitespace-nowrap">
+                                    <tbody class="data-skeleton divide-y divide-gray-50">
+                                        <tr><td class="px-6 py-4"><div class="h-10 bg-gray-100 rounded-lg animate-pulse w-full"></div></td></tr>
+                                        <tr><td class="px-6 py-4"><div class="h-10 bg-gray-100 rounded-lg animate-pulse w-full"></div></td></tr>
+                                        <tr><td class="px-6 py-4"><div class="h-10 bg-gray-100 rounded-lg animate-pulse w-full"></div></td></tr>
+                                    </tbody>
+                                    <!-- Fallback Sample row representing UI -->
+                                    <tbody class="data-content hidden divide-y divide-gray-50">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-3">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center"><i data-lucide="arrow-down-to-line" class="w-4 h-4"></i></div>
+                                                    <div>
+                                                        <p class="text-sm font-bold text-gray-900">Deposit • ₦150,000</p>
+                                                        <p class="text-xs text-gray-500">MES-0001 • Ref: GTB-123</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-3 text-right">
+                                                <button class="px-3 py-1.5 bg-brand-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-brand-700 mr-2">Approve</button>
+                                                <button class="px-3 py-1.5 bg-white border border-gray-200 text-red-600 text-xs font-bold rounded-lg shadow-sm hover:bg-red-50">Reject</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- System Activity Timeline -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col h-[400px]">
+                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4 text-brand-600"></i> Recent Activity</h3>
+                            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4" id="recentActivity">
+                                <!-- Skeletons -->
+                                <div class="data-skeleton flex gap-3 animate-pulse">
+                                    <div class="w-2 h-2 rounded-full bg-gray-300 mt-1.5 shrink-0"></div>
+                                    <div class="w-full"><div class="h-3 bg-gray-200 rounded w-full mb-1"></div><div class="h-2 bg-gray-100 rounded w-1/2"></div></div>
+                                </div>
+                                <div class="data-skeleton flex gap-3 animate-pulse">
+                                    <div class="w-2 h-2 rounded-full bg-gray-300 mt-1.5 shrink-0"></div>
+                                    <div class="w-full"><div class="h-3 bg-gray-200 rounded w-full mb-1"></div><div class="h-2 bg-gray-100 rounded w-1/3"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- WALLET APPROVALS (Section) -->
+                <!-- ========================================== -->
+                <section id="walletFundingTable" class="admin-section hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                        <div>
+                            <h3 class="font-bold text-gray-900">Wallet Funding Requests</h3>
+                            <p class="text-xs text-gray-500 mt-0.5">Manual approval queue for bank transfers.</p>
+                        </div>
+                        <button class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-semibold shadow-sm flex items-center gap-2 hover:bg-gray-50"><i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left whitespace-nowrap">
+                            <thead class="bg-white text-xs uppercase text-gray-500 border-b border-gray-100 font-semibold">
+                                <tr>
+                                    <th class="px-6 py-4">Transaction ID</th>
+                                    <th class="px-6 py-4">User</th>
+                                    <th class="px-6 py-4">Amount</th>
+                                    <th class="px-6 py-4">Method / Ref</th>
+                                    <th class="px-6 py-4">Proof</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="data-skeleton divide-y divide-gray-50">
+                                <!-- Skeletons handled by JS or CSS identical to previous -->
+                                <tr><td colspan="6" class="px-6 py-12 text-center text-gray-400">Loading queue...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- VERIFICATION (KYC) QUEUE (Section) -->
+                <!-- ========================================== -->
+                <section id="verificationQueue" class="admin-section hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                        <div>
+                            <h3 class="font-bold text-gray-900">KYC Verification Queue</h3>
+                            <p class="text-xs text-gray-500 mt-0.5">Review user identity documents to lift trading limits.</p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left whitespace-nowrap">
+                            <thead class="bg-white text-xs uppercase text-gray-500 border-b border-gray-100 font-semibold">
+                                <tr>
+                                    <th class="px-6 py-4">User ID</th>
+                                    <th class="px-6 py-4">Submitted</th>
+                                    <th class="px-6 py-4">Documents</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-right">Decision</th>
+                                </tr>
+                            </thead>
+                            <tbody class="data-skeleton divide-y divide-gray-50">
+                                <tr><td colspan="5" class="px-6 py-12 text-center text-gray-400">Loading queue...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- USER MANAGEMENT (Section) -->
+                <!-- ========================================== -->
+                <section id="userTable" class="admin-section hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                        <div>
+                            <h3 class="font-bold text-gray-900">User Management</h3>
+                            <p class="text-xs text-gray-500 mt-0.5">Global registry of all platform accounts.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-semibold shadow-sm hover:bg-gray-50">Export CSV</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left whitespace-nowrap">
+                            <thead class="bg-white text-xs uppercase text-gray-500 border-b border-gray-100 font-semibold">
+                                <tr>
+                                    <th class="px-6 py-4">Public ID</th>
+                                    <th class="px-6 py-4">User Details</th>
+                                    <th class="px-6 py-4">Role</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Verification</th>
+                                    <th class="px-6 py-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="data-skeleton divide-y divide-gray-50">
+                                <tr><td colspan="6" class="px-6 py-12 text-center text-gray-400">Loading user registry...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-between items-center">
+                        <span class="text-xs text-gray-500">Showing top results. Use search for specific users.</span>
+                    </div>
+                </section>
+
+                <!-- ========================================== -->
+                <!-- DISPUTES (Section) -->
+                <!-- ========================================== -->
+                <section id="disputeTable" class="admin-section hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                    <div class="px-6 py-5 border-b border-red-100 flex justify-between items-center bg-red-50/30">
+                        <div>
+                            <h3 class="font-bold text-red-700 flex items-center gap-2"><i data-lucide="scale" class="w-5 h-5"></i> Active Disputes</h3>
+                            <p class="text-xs text-red-500 mt-0.5">Escrows frozen requiring administrative mediation.</p>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left whitespace-nowrap">
+                            <thead class="bg-white text-xs uppercase text-gray-500 border-b border-gray-100 font-semibold">
+                                <tr>
+                                    <th class="px-6 py-4">Escrow ID</th>
+                                    <th class="px-6 py-4">Buyer vs Seller</th>
+                                    <th class="px-6 py-4">Amount Locked</th>
+                                    <th class="px-6 py-4">Dispute Reason</th>
+                                    <th class="px-6 py-4 text-right">Mediation</th>
+                                </tr>
+                            </thead>
+                            <tbody class="data-skeleton divide-y divide-gray-50">
+                                <tr><td colspan="5" class="px-6 py-12 text-center text-gray-400">Loading disputes...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Additional place-holder sections for Escrow, Marketplace, Audit Logs -->
+                <section id="escrowTable" class="admin-section hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center text-gray-500">Escrow Registry module loading...</section>
+                <section id="marketplaceTable" class="admin-section hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center text-gray-500">Marketplace Moderation module loading...</section>
+                <section id="auditLogTable" class="admin-section hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center text-gray-500">Immutable Audit Ledger loading...</section>
+                <section id="systemSettings" class="admin-section hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center text-gray-500">Platform Settings loading...</section>
+                <section id="notificationCenter" class="admin-section hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-6 text-center text-gray-500">Broadcast Center loading...</section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- UI/UX Interactivity Scripts (Non-Business Logic strictly for styling/toggles) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // Mobile Menu Toggle
+            const btnMobileMenu = document.getElementById('btnMobileMenu');
+            const sidebar = document.getElementById('sidebar');
+            if (btnMobileMenu && sidebar) {
+                btnMobileMenu.addEventListener('click', () => {
+                    sidebar.classList.toggle('-translate-x-full');
+                });
+            }
+
+            // Real-time local clock for Platform Health
+            const timeDisplay = document.getElementById('currentServerTime');
+            if(timeDisplay) {
+                setInterval(() => {
+                    timeDisplay.textContent = new Date().toLocaleTimeString('en-NG', { hour12: true }) + ' WAT';
+                }, 1000);
+            }
+
+            // Section Routing (Basic UI Tab Logic - Real data fetches happen in admin.js)
+            const links = document.querySelectorAll('.sidebar-link');
+            const sections = document.querySelectorAll('.admin-section');
+            const pageHeaderTitle = document.getElementById('pageHeaderTitle');
+
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    // Update Active Styles
+                    links.forEach(l => {
+                        l.classList.remove('bg-brand-600/10', 'text-brand-400');
+                        l.classList.add('text-gray-400');
+                    });
+                    const targetBtn = e.currentTarget;
+                    targetBtn.classList.remove('text-gray-400', 'hover:text-white', 'hover:bg-gray-900');
+                    targetBtn.classList.add('bg-brand-600/10', 'text-brand-400');
+
+                    // Update Header
+                    if(pageHeaderTitle) pageHeaderTitle.textContent = targetBtn.textContent.trim();
+
+                    // Toggle Sections
+                    const targetId = targetBtn.getAttribute('data-target');
+                    sections.forEach(sec => {
+                        if (sec.id === targetId) {
+                            sec.classList.remove('hidden');
+                            sec.classList.add('block');
+                        } else {
+                            sec.classList.remove('block');
+                            sec.classList.add('hidden');
+                        }
+                    });
+
+                    // Close mobile sidebar on selection
+                    if(window.innerWidth < 1024 && sidebar) {
+                        sidebar.classList.add('-translate-x-full');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Strict CSS Custom Scrollbar for Sidebar -->
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+    </style>
+
+    <!-- Secure Core Business Logic Modules -->
+    <!-- Ensures dependencies load correctly and safely interface with Firebase -->
+    <script type="module" src="js/authGuard.js"></script>
+    <script type="module" src="js/notifications.js"></script>
+    <script type="module" src="js/admin.js"></script>
+    <script type="module" src="js/logout.js"></script>
+
+</body>
+  </html>
