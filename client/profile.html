@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Profile | MetaEscrow</title>
+    <meta name="description" content="Manage your MetaEscrow identity, verify your account, and track your platform trust score.">
+    <link rel="canonical" href="https://www.metaescrow.com.ng/profile">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            500: '#10b981',
+                            600: '#059669',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 flex h-screen overflow-hidden">
+
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/90 z-[100] flex items-center justify-center hidden">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+    </div>
+
+    <aside class="hidden lg:flex w-64 bg-gray-900 text-white flex-col">
+        <div class="h-16 flex items-center px-6 border-b border-gray-800 bg-gray-950 font-bold tracking-tight text-xl">
+            Meta<span class="text-brand-500">Escrow</span>
+        </div>
+        <nav class="flex-1 py-6 px-4 space-y-2">
+            <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:bg-gray-800"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard</a>
+            <a href="profile.html" class="flex items-center px-4 py-3 rounded-lg bg-brand-600 text-white"><i data-lucide="user" class="w-5 h-5 mr-3"></i> My Profile</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <div class="max-w-5xl mx-auto space-y-6">
+            
+            <section class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6">
+                <div class="relative">
+                    <img id="profilePicture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" 
+                         class="w-24 h-24 rounded-full border-4 border-gray-100 object-cover bg-gray-200" alt="Profile">
+                </div>
+                <div class="flex-1">
+                    <div class="flex flex-col md:flex-row md:items-center gap-3 mb-2">
+                        <h1 id="fullName" class="text-2xl font-bold text-gray-900 data-content hidden">Loading...</h1>
+                        <div class="data-skeleton h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
+                        <span id="verificationStatus" class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full uppercase">Unverified</span>
+                    </div>
+                    <p id="username" class="text-gray-500 font-medium mb-4">@...</p>
+                    <div class="flex gap-4 text-sm text-gray-600">
+                        <span>ID: <strong id="publicUserId">...</strong></span>
+                        <span>•</span>
+                        <span>Member since 2026</span>
+                    </div>
+                </div>
+                <button id="saveProfileButton" class="hidden md:block self-start px-6 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-gray-800">Edit Profile</button>
+            </section>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 space-y-6">
+                    <section class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                        <h2 class="font-bold text-lg mb-6">Account Information</h2>
+                        <form id="formUpdateProfile" class="grid sm:grid-cols-2 gap-4">
+                            <div class="sm:col-span-2"><label class="block text-sm text-gray-500 mb-1">Full Name</label><input type="text" id="fullName" class="w-full p-3 bg-gray-50 rounded-xl border"></div>
+                            <div><label class="block text-sm text-gray-500 mb-1">Email</label><input type="email" id="email" disabled class="w-full p-3 bg-gray-100 rounded-xl border"></div>
+                            <div><label class="block text-sm text-gray-500 mb-1">Phone</label><input type="tel" id="phone" class="w-full p-3 bg-gray-50 rounded-xl border"></div>
+                            <div class="sm:col-span-2"><label class="block text-sm text-gray-500 mb-1">Bio</label><textarea id="bio" class="w-full p-3 bg-gray-50 rounded-xl border" rows="3"></textarea></div>
+                            <button type="submit" class="w-max px-6 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm">Save Changes</button>
+                        </form>
+                    </section>
+
+                    <section class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                        <h2 class="font-bold text-lg mb-4">Verification Center</h2>
+                        <p class="text-sm text-gray-500 mb-6 italic">Verified accounts can list products above ₦20,000.</p>
+                        <form id="formSubmitKYC" class="space-y-4">
+                            <input type="url" id="nationalId" class="w-full p-3 bg-gray-50 rounded-xl border" placeholder="National ID Image URL">
+                            <input type="url" id="selfie" class="w-full p-3 bg-gray-50 rounded-xl border" placeholder="Selfie Image URL">
+                            <input type="url" id="utilityBill" class="w-full p-3 bg-gray-50 rounded-xl border" placeholder="Utility Bill Image URL">
+                            <button type="submit" class="px-6 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm">Submit Verification</button>
+                        </form>
+                    </section>
+                </div>
+
+                <div class="space-y-6">
+                    <section class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 text-center">
+                        <h2 class="font-bold text-lg mb-4">Trust Score</h2>
+                        <div class="text-4xl font-black text-brand-600 mb-2" id="trustScore">0</div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5"><div id="verificationProgress" class="bg-brand-600 h-2.5 rounded-full" style="width: 0%"></div></div>
+                    </section>
+
+                    <section class="bg-gray-900 rounded-3xl p-6 shadow-lg text-white">
+                        <h2 class="font-bold text-lg mb-4">Security Settings</h2>
+                        <form id="formChangePassword" class="space-y-3">
+                            <input type="password" id="currentPassword" class="w-full p-3 rounded-xl bg-gray-800 border border-gray-700" placeholder="Current Password">
+                            <input type="password" id="newPassword" class="w-full p-3 rounded-xl bg-gray-800 border border-gray-700" placeholder="New Password">
+                            <button type="submit" class="w-full py-3 bg-white text-gray-900 rounded-xl font-bold text-sm">Update Password</button>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/authGuard.js"></script>
+    <script type="module" src="js/notifications.js"></script>
+    <script type="module" src="js/profile.js"></script>
+</body>
+</html>
