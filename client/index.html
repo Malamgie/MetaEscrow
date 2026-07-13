@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaEscrow | Nigeria's Safest Escrow Platform</title>
+    <meta name="description" content="MetaEscrow protects buyers and sellers during online transactions. Secure your funds, verify deliveries, and transact with absolute confidence.">
+    <meta name="keywords" content="Escrow Nigeria, secure payments, online marketplace, buyer protection, seller protection, MetaEscrow">
+    <link rel="canonical" href="https://www.metaescrow.com.ng/">
+    
+    <meta property="og:title" content="MetaEscrow | Transact with Confidence">
+    <meta property="og:description" content="The ultimate secure escrow platform for buyers and sellers in Nigeria.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.metaescrow.com.ng/">
+    <meta property="og:image" content="https://www.metaescrow.com.ng/assets/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981', // Emerald
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        },
+                        accent: {
+                            500: '#3b82f6', // Blue
+                            600: '#2563eb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased selection:bg-brand-500 selection:text-white relative">
+
+    <header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/30">
+                        <i data-lucide="shield-check" class="text-white w-6 h-6"></i>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight text-gray-900">Meta<span class="text-brand-600">Escrow</span></span>
+                </div>
+
+                <nav class="hidden md:flex space-x-8 items-center" aria-label="Main Navigation">
+                    <a href="#how-it-works" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">How it Works</a>
+                    <a href="#features" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Features</a>
+                    <a href="#marketplace" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Marketplace</a>
+                    <a href="#security" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Security</a>
+                </nav>
+
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="login.html" class="text-gray-600 hover:text-gray-900 font-medium px-4 py-2 transition-colors">Login</a>
+                    <a href="register.html" class="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-lg">Create Account</a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-900 focus:outline-none p-2" aria-label="Toggle menu" aria-expanded="false">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-100 absolute w-full shadow-lg">
+            <div class="px-4 pt-2 pb-6 space-y-2 text-center">
+                <a href="#how-it-works" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-600 hover:bg-gray-50">How it Works</a>
+                <a href="#features" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-600 hover:bg-gray-50">Features</a>
+                <a href="#marketplace" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-600 hover:bg-gray-50">Marketplace</a>
+                <a href="#security" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-600 hover:bg-gray-50">Security</a>
+                <div class="pt-4 flex flex-col gap-3 px-3">
+                    <a href="login.html" class="w-full text-center border border-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium">Login</a>
+                    <a href="register.html" class="w-full text-center bg-gray-900 text-white px-4 py-3 rounded-xl font-medium">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+            <div class="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full overflow-hidden -z-10 pointer-events-none">
+                <div class="absolute -top-40 right-0 w-[500px] h-[500px] rounded-full bg-brand-100/50 blur-3xl opacity-60"></div>
+                <div class="absolute top-40 -left-20 w-[400px] h-[400px] rounded-full bg-accent-500/10 blur-3xl opacity-60"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm mb-8 animate-fade-in-up">
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-500 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-600"></span>
+                    </span>
+                    <span class="text-sm font-medium text-gray-600">Nigeria's Safest Escrow Platform</span>
+                </div>
+                
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900 mb-6 max-w-4xl mx-auto leading-tight">
+                    Transact online with <br class="hidden md:block"/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-accent-600">absolute confidence.</span>
+                </h1>
+                
+                <p class="mt-4 text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    Protect your funds and verify deliveries before money changes hands. Whether you are buying a gadget or paying for a service, MetaEscrow ensures everyone gets what they agreed on.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <a href="register.html" class="w-full sm:w-auto px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white rounded-full font-semibold text-lg transition-all shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2">
+                        Get Started for Free <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#how-it-works" class="w-full sm:w-auto px-8 py-4 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-800 rounded-full font-semibold text-lg transition-all flex items-center justify-center gap-2 shadow-sm">
+                        <i data-lucide="play-circle" class="w-5 h-5 text-gray-500"></i> See How it Works
+                    </a>
+                </div>
+
+                <div class="mt-16 lg:mt-24 relative max-w-5xl mx-auto">
+                    <div class="rounded-2xl border border-gray-200/50 bg-white/50 backdrop-blur-sm p-2 shadow-2xl">
+                        <div class="rounded-xl overflow-hidden bg-gray-50 border border-gray-100 aspect-video relative flex items-center justify-center">
+                            <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 opacity-90"></div>
+                            <div class="relative text-center">
+                                <i data-lucide="layout-dashboard" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                                <p class="text-gray-400 font-medium">Intuitive Dashboard Interface</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Eliminate the risk of online fraud</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">Social media commerce shouldn't be a gamble. We provide a transparent, trusted middle-ground for every transaction.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:shadow-lg transition-shadow duration-300 group">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="shield" class="w-7 h-7 text-brand-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Buyer Protection</h3>
+                        <p class="text-gray-600 leading-relaxed">Your funds are held securely in our vault. We never release payment to the seller until you have received and inspected the item.</p>
+                    </div>
+
+                    <div class="p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:shadow-lg transition-shadow duration-300 group">
+                        <div class="w-14 h-14 rounded-2xl bg-accent-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="briefcase" class="w-7 h-7 text-accent-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Seller Assurance</h3>
+                        <p class="text-gray-600 leading-relaxed">Never ship items on a promise again. Once the buyer funds the escrow, you know the money is guaranteed before you dispatch goods.</p>
+                    </div>
+
+                    <div class="p-8 rounded-3xl bg-gray-50 border border-gray-100 hover:shadow-lg transition-shadow duration-300 group">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="scale" class="w-7 h-7 text-purple-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Fair Dispute Resolution</h3>
+                        <p class="text-gray-600 leading-relaxed">If things don't go as planned, our administrative team steps in to review evidence and ensure a fair and transparent resolution.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="py-24 bg-gray-900 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center mb-20">
+                    <h2 class="text-3xl font-bold mb-4">How MetaEscrow Works</h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-lg">A simple, five-step process that guarantees safety for all parties.</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between items-center relative space-y-12 md:space-y-0">
+                    <div class="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gray-800 -z-10"></div>
+                    <div class="md:hidden absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-full bg-gray-800 -z-10"></div>
+
+                    <div class="flex flex-col items-center text-center w-full md:w-1/5 relative">
+                        <div class="w-24 h-24 rounded-full bg-gray-800 border-4 border-gray-900 flex items-center justify-center mb-6 shadow-xl text-brand-400">
+                            <i data-lucide="file-plus" class="w-10 h-10"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">1. Agree</h4>
+                        <p class="text-sm text-gray-400 px-4">Buyer and seller agree to terms and create a transaction.</p>
+                    </div>
+
+                    <div class="flex flex-col items-center text-center w-full md:w-1/5 relative">
+                        <div class="w-24 h-24 rounded-full bg-gray-800 border-4 border-gray-900 flex items-center justify-center mb-6 shadow-xl text-brand-400">
+                            <i data-lucide="wallet" class="w-10 h-10"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">2. Fund</h4>
+                        <p class="text-sm text-gray-400 px-4">Buyer transfers the funds securely into the MetaEscrow vault.</p>
+                    </div>
+
+                    <div class="flex flex-col items-center text-center w-full md:w-1/5 relative">
+                        <div class="w-24 h-24 rounded-full bg-brand-600 border-4 border-gray-900 flex items-center justify-center mb-6 shadow-xl text-white shadow-brand-500/50">
+                            <i data-lucide="truck" class="w-10 h-10"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2 text-brand-400">3. Deliver</h4>
+                        <p class="text-sm text-gray-300 px-4">Seller is notified funds are secured and ships the product/service.</p>
+                    </div>
+
+                    <div class="flex flex-col items-center text-center w-full md:w-1/5 relative">
+                        <div class="w-24 h-24 rounded-full bg-gray-800 border-4 border-gray-900 flex items-center justify-center mb-6 shadow-xl text-brand-400">
+                            <i data-lucide="check-circle" class="w-10 h-10"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">4. Inspect</h4>
+                        <p class="text-sm text-gray-400 px-4">Buyer receives the item and approves the delivery on the platform.</p>
+                    </div>
+
+                    <div class="flex flex-col items-center text-center w-full md:w-1/5 relative">
+                        <div class="w-24 h-24 rounded-full bg-gray-800 border-4 border-gray-900 flex items-center justify-center mb-6 shadow-xl text-brand-400">
+                            <i data-lucide="banknote" class="w-10 h-10"></i>
+                        </div>
+                        <h4 class="font-bold text-lg mb-2">5. Release</h4>
+                        <p class="text-sm text-gray-400 px-4">MetaEscrow automatically releases the funds to the seller's wallet.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Enterprise-grade tools for everyone</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">We've built a comprehensive ecosystem to manage your funds, products, and reputation.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                        <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4 text-gray-800">
+                            <i data-lucide="wallet" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 mb-2">Digital Wallet</h4>
+                        <p class="text-sm text-gray-600">Fund, withdraw, and track your balances in real-time with zero hidden fees.</p>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                        <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4 text-gray-800">
+                            <i data-lucide="store" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 mb-2">Marketplace</h4>
+                        <p class="text-sm text-gray-600">List products seamlessly. Every item listed is automatically escrow-ready.</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                        <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4 text-gray-800">
+                            <i data-lucide="bell-ring" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 mb-2">Live Notifications</h4>
+                        <p class="text-sm text-gray-600">Get instant updates on funding, delivery statuses, and buyer confirmations.</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                        <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mb-4 text-gray-800">
+                            <i data-lucide="fingerprint" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-gray-900 mb-2">Identity Verification</h4>
+                        <p class="text-sm text-gray-600">Strict KYC protocols ensure you are dealing with real, verified individuals.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="marketplace" class="py-24 bg-white overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row items-center gap-16">
+                    <div class="lg:w-1/2">
+                        <div class="inline-block px-3 py-1 rounded-full bg-accent-50 text-accent-600 text-sm font-semibold mb-6 border border-accent-100">
+                            Integrated Marketplace
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Discover verified sellers and premium products.</h2>
+                        <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                            MetaEscrow isn't just a payment gateway. Browse our curated marketplace filled with trusted vendors. Discover verified sellers offering <strong>up to 20% OFF</strong> on premium items. Every single purchase initiates a secure escrow smart-contract automatically.
+                        </p>
+                        <ul class="space-y-4 mb-10">
+                            <li class="flex items-center gap-3 text-gray-700">
+                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center text-brand-600"><i data-lucide="check" class="w-4 h-4"></i></div>
+                                Verified Seller Badges
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-700">
+                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center text-brand-600"><i data-lucide="check" class="w-4 h-4"></i></div>
+                                Transparent Reviews & Ratings
+                            </li>
+                            <li class="flex items-center gap-3 text-gray-700">
+                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 flex items-center justify-center text-brand-600"><i data-lucide="check" class="w-4 h-4"></i></div>
+                                One-click "Buy with Escrow"
+                            </li>
+                        </ul>
+                        <a href="#" class="inline-flex items-center gap-2 text-brand-600 font-semibold hover:text-brand-700 transition-colors">
+                            Explore Marketplace <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                    <div class="lg:w-1/2 relative">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-accent-100 to-brand-50 rounded-3xl transform rotate-3 scale-105 -z-10"></div>
+                        <div class="bg-white border border-gray-100 rounded-3xl p-6 shadow-xl">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="rounded-xl bg-gray-50 border border-gray-100 p-3">
+                                    <div class="w-full h-32 bg-gray-200 rounded-lg mb-3 flex items-center justify-center"><i data-lucide="smartphone" class="w-8 h-8 text-gray-400"></i></div>
+                                    <div class="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
+                                    <div class="h-4 w-1/2 bg-brand-100 rounded"></div>
+                                </div>
+                                <div class="rounded-xl bg-gray-50 border border-gray-100 p-3">
+                                    <div class="w-full h-32 bg-gray-200 rounded-lg mb-3 flex items-center justify-center"><i data-lucide="laptop" class="w-8 h-8 text-gray-400"></i></div>
+                                    <div class="h-4 w-3/4 bg-gray-200 rounded mb-2"></div>
+                                    <div class="h-4 w-1/2 bg-brand-100 rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="security" class="py-24 bg-gray-900 text-white relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl font-bold mb-12">Bank-Grade Security Architecture</h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mb-4 text-brand-400">
+                            <i data-lucide="lock" class="w-8 h-8"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Encrypted</h4>
+                        <p class="text-xs text-gray-400">256-bit AES Encryption</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mb-4 text-accent-400">
+                            <i data-lucide="database" class="w-8 h-8"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Firebase Auth</h4>
+                        <p class="text-xs text-gray-400">Secure Cloud Infrastructure</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mb-4 text-purple-400">
+                            <i data-lucide="shield-alert" class="w-8 h-8"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">RBAC</h4>
+                        <p class="text-xs text-gray-400">Role-Based Access Control</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mb-4 text-emerald-400">
+                            <i data-lucide="user-check" class="w-8 h-8"></i>
+                        </div>
+                        <h4 class="font-semibold mb-1">Strict KYC</h4>
+                        <p class="text-xs text-gray-400">Identity Verification</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-brand-600 text-white border-b border-brand-700">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center" id="stats-section">
+                    <div>
+                        <div class="text-4xl font-extrabold mb-2"><span class="counter" data-target="15000">0</span>+</div>
+                        <div class="text-brand-100 font-medium">Registered Users</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-extrabold mb-2"><span class="counter" data-target="45000">0</span>+</div>
+                        <div class="text-brand-100 font-medium">Escrows Completed</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-extrabold mb-2">₦<span class="counter" data-target="2">0</span>B+</div>
+                        <div class="text-brand-100 font-medium">Transaction Volume</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-extrabold mb-2"><span class="counter" data-target="99">0</span>.9%</div>
+                        <div class="text-brand-100 font-medium">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Trusted by Nigerians nationwide</h2>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm relative">
+                        <i data-lucide="quote" class="absolute top-6 right-8 w-10 h-10 text-gray-100"></i>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-lg">M</div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">Maya</h4>
+                                <p class="text-sm text-gray-500">Verified Buyer</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 italic">"MetaEscrow made buying a high-end laptop online completely stress-free. The seller shipped exactly what I ordered because they knew the funds were secured."</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm relative">
+                        <i data-lucide="quote" class="absolute top-6 right-8 w-10 h-10 text-gray-100"></i>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-white font-bold text-lg">D</div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">Dalladi</h4>
+                                <p class="text-sm text-gray-500">Freelance Developer</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 italic">"As a freelancer, I use this platform for all my client projects. It guarantees I get paid for my services without having to chase invoices for weeks."</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm relative">
+                        <i data-lucide="quote" class="absolute top-6 right-8 w-10 h-10 text-gray-100"></i>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white font-bold text-lg">G</div>
+                            <div>
+                                <h4 class="font-bold text-gray-900">G Moh</h4>
+                                <p class="text-sm text-gray-500">Real Estate Agent</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 italic">"We use MetaEscrow to secure tenancy deposits. It builds immediate trust with new clients and streamlines our entire financial workflow safely."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 relative overflow-hidden bg-white">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-gray-900 rounded-[2.5rem] p-10 md:p-16 text-center relative overflow-hidden shadow-2xl">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-500/20 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-accent-500/20 rounded-full blur-3xl"></div>
+                    
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 relative z-10">Ready to transact securely?</h2>
+                    <p class="text-lg text-gray-400 mb-10 max-w-2xl mx-auto relative z-10">Join thousands of Nigerians protecting their funds. Visit us today and create your free unified account in less than 2 minutes.</p>
+                    
+                    <a href="register.html" class="inline-flex items-center gap-2 px-8 py-4 bg-brand-500 hover:bg-brand-600 text-white rounded-full font-bold text-lg transition-colors relative z-10">
+                        Create Free Account <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-gray-50">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-200">
+                        <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">What happens if the seller doesn't deliver?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5 text-gray-600">
+                            If the seller fails to deliver within the agreed timeframe, you can raise a dispute. Once our administrative team verifies the non-delivery, your funds are fully refunded to your MetaEscrow wallet.
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-200">
+                        <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">How much does MetaEscrow charge?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5 text-gray-600">
+                            Account creation and wallet funding are completely free. We charge a highly competitive platform fee only upon the successful completion of an escrow transaction.
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden transition-all duration-200">
+                        <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Do I need to choose a Buyer or Seller account?</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5 text-gray-600">
+                            No. We utilize a unified user account system. Once you sign up, you can seamlessly act as a buyer, a seller, or both, from the exact same dashboard.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <div class="col-span-2 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center">
+                            <i data-lucide="shield-check" class="text-white w-4 h-4"></i>
+                        </div>
+                        <span class="font-bold text-xl text-gray-900">Meta<span class="text-brand-600">Escrow</span></span>
+                    </div>
+                    <p class="text-sm text-gray-500 leading-relaxed mb-6">Nigeria's most trusted platform for secure online transactions, buyer protection, and verified marketplaces.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-4">Platform</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#how-it-works" class="hover:text-brand-600 transition-colors">How it Works</a></li>
+                        <li><a href="#marketplace" class="hover:text-brand-600 transition-colors">Marketplace</a></li>
+                        <li><a href="#security" class="hover:text-brand-600 transition-colors">Security</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Pricing</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-4">Company</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-gray-900 mb-4">Legal</h4>
+                    <ul class="space-y-3 text-sm text-gray-500">
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">Dispute Policy</a></li>
+                        <li><a href="#" class="hover:text-brand-600 transition-colors">AML Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-400">© <span id="current-year"></span> MetaEscrow Technologies. All rights reserved.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i><span class="sr-only">Twitter</span></a>
+                    <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors"><i data-lucide="linkedin" class="w-5 h-5"></i><span class="sr-only">LinkedIn</span></a>
+                    <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i><span class="sr-only">Instagram</span></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Set dynamic copyright year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const expanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true' || false;
+            mobileMenuBtn.setAttribute('aria-expanded', !expanded);
+        });
+
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // FAQ Accordion Logic
+        const faqBtns = document.querySelectorAll('.faq-btn');
+        faqBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = btn.nextElementSibling;
+                const icon = btn.querySelector('i');
+                const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+                // Close all others (optional accordion behavior)
+                document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+                document.querySelectorAll('.faq-btn').forEach(b => {
+                    b.setAttribute('aria-expanded', 'false');
+                    b.querySelector('i').classList.remove('rotate-180');
+                });
+
+                // Toggle current
+                if (!isExpanded) {
+                    content.classList.remove('hidden');
+                    btn.setAttribute('aria-expanded', 'true');
+                    icon.classList.add('rotate-180');
+                }
+            });
+        });
+
+        // Statistics Counter Animation (Intersection Observer)
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200; // Lower is faster
+
+        const animateCounters = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    counters.forEach(counter => {
+                        const updateCount = () => {
+                            const target = +counter.getAttribute('data-target');
+                            const count = +counter.innerText.replace(/,/g, '');
+                            const inc = target / speed;
+
+                            if (count < target) {
+                                counter.innerText = Math.ceil(count + inc).toLocaleString();
+                                setTimeout(updateCount, 15);
+                            } else {
+                                counter.innerText = target.toLocaleString();
+                            }
+                        };
+                        updateCount();
+                    });
+                    observer.unobserve(entry.target); // Only animate once
+                }
+            });
+        };
+
+        const statsSection = document.getElementById('stats-section');
+        if (statsSection) {
+            const observer = new IntersectionObserver(animateCounters, { threshold: 0.5 });
+            observer.observe(statsSection);
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 10) {
+                header.classList.add('shadow-sm');
+            } else {
+                header.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body>
+</html>
