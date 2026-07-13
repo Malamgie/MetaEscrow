@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | MetaEscrow</title>
+    <meta name="description" content="Manage your secure MetaEscrow transactions, wallet, and marketplace listings.">
+    <link rel="canonical" href="https://www.metaescrow.com.ng/dashboard">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981', // Emerald
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        },
+                        accent: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 flex h-screen overflow-hidden selection:bg-brand-500 selection:text-white">
+
+    <!-- Global Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/30 animate-pulse mb-4">
+            <i data-lucide="shield-check" class="text-white w-7 h-7"></i>
+        </div>
+        <div class="w-8 h-8 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin"></div>
+        <p class="mt-4 text-sm font-medium text-gray-500">Securing session...</p>
+    </div>
+
+    <!-- LEFT SIDEBAR -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-gray-900 text-gray-300 transition-transform -translate-x-full lg:translate-x-0 flex flex-col h-full border-r border-gray-800">
+        <!-- Branding -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-800 bg-gray-950">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg mr-3">
+                <i data-lucide="shield-check" class="text-white w-5 h-5"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight text-white">Meta<span class="text-brand-500">Escrow</span></span>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <a href="dashboard.html" class="flex items-center px-3 py-2.5 bg-brand-600 text-white rounded-xl font-medium shadow-sm shadow-brand-500/20 group">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i> Dashboard
+            </a>
+            <a href="marketplace.html" class="flex items-center px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <i data-lucide="store" class="w-5 h-5 mr-3 group-hover:text-brand-400 transition-colors"></i> Marketplace
+            </a>
+            <a href="escrows.html" class="flex items-center px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <i data-lucide="briefcase" class="w-5 h-5 mr-3 group-hover:text-brand-400 transition-colors"></i> Escrows
+            </a>
+            <a href="wallet.html" class="flex items-center px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <i data-lucide="wallet" class="w-5 h-5 mr-3 group-hover:text-brand-400 transition-colors"></i> Wallet
+            </a>
+            <a href="profile.html" class="flex items-center px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <i data-lucide="user" class="w-5 h-5 mr-3 group-hover:text-brand-400 transition-colors"></i> Profile
+            </a>
+            <a href="notifications.html" class="flex items-center justify-between px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <div class="flex items-center">
+                    <i data-lucide="bell" class="w-5 h-5 mr-3 group-hover:text-brand-400 transition-colors"></i> Notifications
+                </div>
+                <span id="sidebarNotificationBadge" class="hidden bg-brand-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            </a>
+        </nav>
+
+        <!-- Bottom Actions -->
+        <div class="p-4 border-t border-gray-800">
+            <a href="support.html" class="flex items-center px-3 py-2 text-gray-400 hover:text-white transition-colors text-sm mb-2">
+                <i data-lucide="help-circle" class="w-4 h-4 mr-3"></i> Support & FAQ
+            </a>
+            <button id="logoutButton" data-action="logout" class="w-full flex items-center px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-colors text-sm font-medium">
+                <i data-lucide="log-out" class="w-4 h-4 mr-3"></i> Secure Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="flex-1 flex flex-col lg:ml-64 w-full h-full overflow-hidden relative">
+        
+        <!-- TOP NAVIGATION -->
+        <header id="topNavbar" class="sticky top-0 z-30 bg-white/80 backdrop-blur-lg border-b border-gray-100 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center">
+                <button id="btnMobileMenu" class="lg:hidden p-2 -ml-2 mr-2 text-gray-600 hover:text-gray-900 focus:outline-none rounded-lg focus:ring-2 focus:ring-brand-500">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                
+                <!-- Search -->
+                <div class="hidden sm:block relative w-64 md:w-80">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                    </div>
+                    <input type="text" class="block w-full pl-9 pr-3 py-2 border border-gray-200 rounded-full text-sm placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 bg-gray-50 focus:bg-white transition-colors" placeholder="Search escrows, users, products...">
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-5">
+                <!-- Trust Badge -->
+                <div class="hidden md:flex items-center gap-1.5 px-3 py-1 bg-green-50 border border-green-100 rounded-full">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-brand-600"></i>
+                    <span class="text-xs font-semibold text-brand-700">Protected Session</span>
+                </div>
+
+                <!-- Notifications -->
+                <button class="relative p-2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none rounded-full hover:bg-gray-100">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span id="notificationCount" class="absolute top-1 right-1.5 flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                    </span>
+                </button>
+
+                <!-- Profile Dropdown Trigger -->
+                <div class="relative">
+                    <button id="profileMenuToggle" class="flex items-center gap-2 focus:outline-none pl-2 border-l border-gray-200">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-100 to-brand-50 border border-brand-200 flex items-center justify-center overflow-hidden">
+                            <i data-lucide="user" class="w-4 h-4 text-brand-600"></i>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 hidden sm:block"></i>
+                    </button>
+                    <!-- Profile Menu Dropdown (Hidden by default) -->
+                    <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                        <div class="px-4 py-2 border-b border-gray-100">
+                            <p class="text-sm font-medium text-gray-900 truncate data-skeleton bg-gray-200 rounded animate-pulse h-4 w-24"></p>
+                            <p id="navUserName" class="text-sm font-medium text-gray-900 truncate data-content hidden">Loading...</p>
+                            <p class="text-xs text-gray-500 truncate data-skeleton bg-gray-200 rounded animate-pulse h-3 w-16 mt-1"></p>
+                            <p id="navPublicUserId" class="text-xs text-gray-500 truncate data-content hidden">MES-...</p>
+                        </div>
+                        <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"><i data-lucide="user" class="w-4 h-4 inline mr-2 text-gray-400"></i> My Profile</a>
+                        <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"><i data-lucide="settings" class="w-4 h-4 inline mr-2 text-gray-400"></i> Settings</a>
+                        <button data-action="logout" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50"><i data-lucide="log-out" class="w-4 h-4 inline mr-2 text-red-400"></i> Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE MAIN CONTENT -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-6">
+                
+                <!-- Welcome Section -->
+                <section class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-64 h-64 bg-gradient-to-bl from-brand-50 to-transparent rounded-full -mr-16 -mt-16 z-0"></div>
+                    <div class="relative z-10 w-full">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
+                                Welcome back, <span id="userName" class="text-brand-600 data-content hidden">User</span>
+                                <span class="data-skeleton bg-gray-200 rounded animate-pulse h-8 w-32 inline-block align-middle"></span>
+                            </h1>
+                            <span id="verificationBadge" class="hidden items-center justify-center bg-blue-100 text-blue-700 p-1 rounded-full" title="Verified Account">
+                                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                            </span>
+                        </div>
+                        <p class="text-gray-500 text-sm">
+                            ID: <strong id="publicUserId" class="text-gray-700 data-content hidden">MES-XXXXXX</strong>
+                            <span class="data-skeleton bg-gray-200 rounded animate-pulse h-4 w-20 inline-block align-middle"></span>
+                            • <span id="currentDateDisplay">Loading date...</span>
+                        </p>
+                    </div>
+                    <div class="relative z-10 mt-6 md:mt-0 w-full md:w-auto flex flex-wrap gap-3">
+                        <button class="flex-1 md:flex-none px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors shadow-sm whitespace-nowrap">
+                            <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i> New Escrow
+                        </button>
+                        <button class="flex-1 md:flex-none px-4 py-2.5 bg-brand-50 text-brand-700 text-sm font-medium rounded-xl border border-brand-200 hover:bg-brand-100 transition-colors whitespace-nowrap">
+                            Fund Wallet
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Statistics Cards (4 Columns) -->
+                <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    <!-- Wallet Balance -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Wallet Balance</p>
+                                <h3 class="text-2xl font-bold text-gray-900 mt-1 data-content hidden" id="walletBalance">₦0.00</h3>
+                                <div class="data-skeleton bg-gray-200 rounded animate-pulse h-8 w-24 mt-1"></div>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-brand-600">
+                                <i data-lucide="wallet" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-xs text-gray-500">
+                            Available to withdraw
+                        </div>
+                    </div>
+
+                    <!-- Escrow Balance -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Locked in Escrow</p>
+                                <h3 class="text-2xl font-bold text-gray-900 mt-1 data-content hidden" id="escrowBalance">₦0.00</h3>
+                                <div class="data-skeleton bg-gray-200 rounded animate-pulse h-8 w-24 mt-1"></div>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                <i data-lucide="lock" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-xs text-gray-500">
+                            Currently protected
+                        </div>
+                    </div>
+
+                    <!-- Active Escrows -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Active Escrows</p>
+                                <h3 class="text-2xl font-bold text-gray-900 mt-1 data-content hidden" id="activeEscrows">0</h3>
+                                <div class="data-skeleton bg-gray-200 rounded animate-pulse h-8 w-12 mt-1"></div>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                                <i data-lucide="activity" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <a href="escrows.html" class="flex items-center text-xs text-brand-600 font-medium hover:underline">
+                            View all transactions <i data-lucide="arrow-right" class="w-3 h-3 ml-1"></i>
+                        </a>
+                    </div>
+
+                    <!-- Completed Transactions -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Completed Success</p>
+                                <h3 class="text-2xl font-bold text-gray-900 mt-1 data-content hidden" id="completedTransactions">0</h3>
+                                <div class="data-skeleton bg-gray-200 rounded animate-pulse h-8 w-12 mt-1"></div>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-xs text-gray-500">
+                            Lifetime transactions
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Main Layout Grid -->
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    
+                    <!-- LEFT COLUMN (2/3 width on xl) -->
+                    <div class="xl:col-span-2 space-y-6">
+                        
+                        <!-- Quick Actions -->
+                        <section id="quickActions" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center text-center gap-2 group">
+                                <div class="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors">
+                                    <i data-lucide="arrow-down-to-line" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-700">Deposit</span>
+                            </button>
+                            <button class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center text-center gap-2 group">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 group-hover:bg-gray-900 group-hover:text-white transition-colors">
+                                    <i data-lucide="arrow-up-from-line" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-700">Withdraw</span>
+                            </button>
+                            <button class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center text-center gap-2 group">
+                                <div class="w-10 h-10 rounded-full bg-accent-50 flex items-center justify-center text-accent-600 group-hover:bg-accent-600 group-hover:text-white transition-colors">
+                                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-700">Marketplace</span>
+                            </button>
+                            <button class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center justify-center text-center gap-2 group">
+                                <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                                    <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-sm font-medium text-gray-700">Disputes</span>
+                            </button>
+                        </section>
+
+                        <!-- Recent Escrows Table -->
+                        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                            <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+                                <h3 class="font-bold text-gray-900">Recent Escrows</h3>
+                                <a href="escrows.html" class="text-sm text-brand-600 font-medium hover:underline">View All</a>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse" id="recentEscrowsTable">
+                                    <thead>
+                                        <tr class="bg-gray-50 text-xs uppercase text-gray-500 border-b border-gray-100">
+                                            <th class="px-6 py-3 font-medium">Ref ID</th>
+                                            <th class="px-6 py-3 font-medium">Role</th>
+                                            <th class="px-6 py-3 font-medium">Amount</th>
+                                            <th class="px-6 py-3 font-medium">Status</th>
+                                            <th class="px-6 py-3 font-medium text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- Skeleton Body -->
+                                    <tbody class="data-skeleton">
+                                        <tr class="border-b border-gray-50"><td colspan="5" class="px-6 py-4"><div class="h-4 bg-gray-200 rounded animate-pulse w-full"></div></td></tr>
+                                        <tr class="border-b border-gray-50"><td colspan="5" class="px-6 py-4"><div class="h-4 bg-gray-200 rounded animate-pulse w-full"></div></td></tr>
+                                        <tr><td colspan="5" class="px-6 py-4"><div class="h-4 bg-gray-200 rounded animate-pulse w-3/4"></div></td></tr>
+                                    </tbody>
+                                    <!-- Data Body (Hydrated by JS) -->
+                                    <tbody class="data-content hidden divide-y divide-gray-100">
+                                        <!-- Javascript will inject rows here. Empty state fallback below. -->
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-12 text-center text-gray-500 text-sm">
+                                                <div class="flex flex-col items-center justify-center">
+                                                    <i data-lucide="inbox" class="w-10 h-10 text-gray-300 mb-3"></i>
+                                                    <p>No recent escrows found.</p>
+                                                    <button class="mt-3 text-brand-600 font-medium text-sm hover:underline">Create your first escrow</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <!-- Marketplace Preview -->
+                        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+                                <h3 class="font-bold text-gray-900">Your Listings <span class="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-0.5 rounded-full ml-2" id="marketplaceListings">0</span></h3>
+                                <a href="marketplace.html" class="text-sm text-brand-600 font-medium hover:underline">Manage</a>
+                            </div>
+                            <div class="p-6">
+                                <div id="marketplaceContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <!-- Skeleton Cards -->
+                                    <div class="data-skeleton border border-gray-100 rounded-xl p-3 animate-pulse">
+                                        <div class="w-full h-32 bg-gray-200 rounded-lg mb-3"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                    </div>
+                                    <div class="data-skeleton border border-gray-100 rounded-xl p-3 animate-pulse hidden sm:block">
+                                        <div class="w-full h-32 bg-gray-200 rounded-lg mb-3"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                    </div>
+                                    <!-- Empty State Fallback -->
+                                    <div class="data-content hidden col-span-full py-8 text-center text-gray-500 text-sm">
+                                        You don't have any active marketplace listings.
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- RIGHT COLUMN (1/3 width on xl) -->
+                    <div class="space-y-6">
+                        
+                        <!-- Account Verification Status -->
+                        <section class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 shadow-md text-white relative overflow-hidden">
+                            <i data-lucide="shield-alert" class="absolute -right-4 -bottom-4 w-32 h-32 text-white/5 pointer-events-none"></i>
+                            <div class="relative z-10">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="font-bold text-lg">Verification</h3>
+                                    <span id="verificationStatus" class="px-2.5 py-1 rounded-full text-xs font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30 data-content hidden">Unverified</span>
+                                </div>
+                                <p class="text-sm text-gray-400 mb-5">Verify your identity to unlock unlimited listing prices and build trust.</p>
+                                <div class="w-full bg-gray-700 rounded-full h-1.5 mb-2">
+                                    <div class="bg-amber-400 h-1.5 rounded-full" style="width: 30%"></div>
+                                </div>
+                                <p class="text-xs text-gray-400 mb-5 text-right">30% Complete</p>
+                                <button class="w-full py-2.5 bg-white text-gray-900 rounded-xl text-sm font-semibold hover:bg-gray-100 transition-colors">
+                                    Complete KYC
+                                </button>
+                            </div>
+                        </section>
+
+                        <!-- Trust Score Card -->
+                        <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-gray-900 mb-4">Trust Score</h3>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="relative w-16 h-16 flex items-center justify-center">
+                                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                            <path class="text-gray-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                            <path class="text-brand-500" stroke-dasharray="0, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" id="trustScoreCircle" />
+                                        </svg>
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <span id="trustScore" class="text-lg font-bold text-gray-900 data-content hidden">0</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900">New Member</p>
+                                        <p class="text-xs text-gray-500 mt-1">Complete transactions to increase score.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Notifications Preview -->
+                        <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-auto max-h-96">
+                            <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
+                                <h3 class="font-bold text-gray-900">Notifications</h3>
+                                <a href="notifications.html" class="text-sm text-brand-600 font-medium hover:underline">View All</a>
+                            </div>
+                            <div id="notificationList" class="p-4 flex-1 overflow-y-auto space-y-3">
+                                <!-- Skeleton -->
+                                <div class="data-skeleton flex gap-3 animate-pulse">
+                                    <div class="w-8 h-8 rounded-full bg-gray-200 shrink-0"></div>
+                                    <div class="flex-1 space-y-2 py-1">
+                                        <div class="h-3 bg-gray-200 rounded w-3/4"></div>
+                                        <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                                    </div>
+                                </div>
+                                <!-- Content Fallback -->
+                                <div class="data-content hidden text-center py-6 text-sm text-gray-500">
+                                    <i data-lucide="bell-off" class="w-8 h-8 mx-auto text-gray-300 mb-2"></i>
+                                    You're all caught up!
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Wallet Summary (Pending & Recent) -->
+                        <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-gray-900 mb-4">Financial Summary</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-500">Pending Clearance</span>
+                                    <span id="pendingBalance" class="font-semibold text-gray-900 data-content hidden">₦0.00</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span class="text-gray-500">Total Escrow Value</span>
+                                    <span class="font-semibold text-gray-900">See Escrows</span>
+                                </div>
+                            </div>
+                            <hr class="my-4 border-gray-100">
+                            <div id="walletHistory" class="space-y-3">
+                                <!-- Minimal Transaction Lines -->
+                                <div class="data-content hidden text-xs text-center text-gray-400">No recent transactions.</div>
+                                <div class="data-skeleton flex justify-between animate-pulse">
+                                    <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                                    <div class="h-3 bg-gray-200 rounded w-1/4"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- UI Interaction Script (Strictly non-business logic DOM toggles) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Icons
+            lucide.createIcons();
+
+            // Insert Current Date securely
+            const dateDisplay = document.getElementById('currentDateDisplay');
+            if(dateDisplay) {
+                dateDisplay.textContent = new Intl.DateTimeFormat('en-NG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date());
+            }
+
+            // Mobile Sidebar Toggle
+            const btnMobileMenu = document.getElementById('btnMobileMenu');
+            const sidebar = document.getElementById('sidebar');
+            if (btnMobileMenu && sidebar) {
+                btnMobileMenu.addEventListener('click', () => {
+                    sidebar.classList.toggle('-translate-x-full');
+                });
+            }
+
+            // Profile Dropdown Toggle
+            const profileMenuToggle = document.getElementById('profileMenuToggle');
+            const profileMenu = document.getElementById('profileMenu');
+            if (profileMenuToggle && profileMenu) {
+                profileMenuToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    profileMenu.classList.toggle('hidden');
+                });
+                
+                // Close when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!profileMenuToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                        profileMenu.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- Secure Core Business Logic Modules -->
+    <!-- The prompt requires strictly these imports with no internal module initialization inside HTML -->
+    <script type="module" src="js/authGuard.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+    <script type="module" src="js/notifications.js"></script>
+    <script type="module" src="js/logout.js"></script>
+
+</body>
+</html>
+
