@@ -5,65 +5,10 @@
 // Import Firebase SDKs
 
 
+
 import {
     ...
     writeBatch
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-
-export {
-    ...
-    writeBatch
-};
-
-async function initializeUser(uid, profileData)
-const batch = writeBatch(db);
-const userRef = doc(db, "users", uid);
-
-const walletRef = doc(db, "wallets", uid);
-
-const settingsRef = doc(db, "settings", uid);
-
-const securityRef = doc(db, "security", uid);
-
-const usernameRef = doc(db, "usernames", profileData.username);
-
-const referralRef = doc(db, "referralCodes", profileData.referralCode);
-
-batch.set(userRef, {...});
-
-batch.set(walletRef, {...});
-
-batch.set(settingsRef, {...});
-
-batch.set(securityRef, {...});
-
-batch.set(usernameRef, {...});
-
-batch.set(referralRef, {...});
-
-await batch.commit();
-await createWelcomeNotification(uid);
-console.warn("Welcome notification failed.");
-catch (error) {
-
-    await currentUser.delete();
-
-    throw error;
-
-}
-
-
-
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-
-import {
-    getAuth
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-import {
-    getFirestore,
-    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 
@@ -107,62 +52,29 @@ const db = getFirestore(app);
 // Export Firebase Services
 // =====================================
 
+
+
 export {
-
-    app,
-
     auth,
-
     db,
-
-    serverTimestamp
-
-};
-
-import {
-    getAuth,
+    serverTimestamp,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
     GoogleAuthProvider,
     OAuthProvider,
-    signInWithPopup
-} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
-
-const auth = getAuth();
-
-// Google
-const googleProvider = new GoogleAuthProvider();
-
-document.getElementById("googleSignIn").addEventListener("click", async () => {
-    try {
-        const result = await signInWithPopup(auth, googleProvider);
-
-        const user = result.user;
-
-        console.log("Signed in:", user);
-
-        // Redirect
-        window.location.href = "/dashboard.html";
-
-    } catch (error) {
-        console.error(error);
-        alert(error.message);
-    }
-});
-
-// Microsoft
-const microsoftProvider = new OAuthProvider("microsoft.com");
-
-document.getElementById("microsoftSignIn").addEventListener("click", async () => {
-    try {
-        const result = await signInWithPopup(auth, microsoftProvider);
-
-        const user = result.user;
-
-        console.log("Signed in:", user);
-
-        window.location.href = "/dashboard.html";
-
-    } catch (error) {
-        console.error(error);
-        alert(error.message);
-    }
-});
+    signInWithPopup,
+    browserLocalPersistence,
+    browserSessionPersistence,
+    setPersistence,
+    onAuthStateChanged,
+    doc,
+    setDoc,
+    getDoc,
+    updateDoc,
+    collection,
+    addDoc,
+    runTransaction,
+    writeBatch,
+    deleteUser
+};
