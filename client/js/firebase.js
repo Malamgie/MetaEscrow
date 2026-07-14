@@ -3,6 +3,58 @@
 // =====================================
 
 // Import Firebase SDKs
+
+
+import {
+    ...
+    writeBatch
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+export {
+    ...
+    writeBatch
+};
+
+async function initializeUser(uid, profileData)
+const batch = writeBatch(db);
+const userRef = doc(db, "users", uid);
+
+const walletRef = doc(db, "wallets", uid);
+
+const settingsRef = doc(db, "settings", uid);
+
+const securityRef = doc(db, "security", uid);
+
+const usernameRef = doc(db, "usernames", profileData.username);
+
+const referralRef = doc(db, "referralCodes", profileData.referralCode);
+
+batch.set(userRef, {...});
+
+batch.set(walletRef, {...});
+
+batch.set(settingsRef, {...});
+
+batch.set(securityRef, {...});
+
+batch.set(usernameRef, {...});
+
+batch.set(referralRef, {...});
+
+await batch.commit();
+await createWelcomeNotification(uid);
+console.warn("Welcome notification failed.");
+catch (error) {
+
+    await currentUser.delete();
+
+    throw error;
+
+}
+
+
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 
 import {
