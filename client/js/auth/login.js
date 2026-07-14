@@ -19,7 +19,7 @@ import {
     collection,
     addDoc,
     serverTimestamp
-} from './firebase.js';
+} from './js/firebase.js';
 
 class LoginController {
     constructor() {
