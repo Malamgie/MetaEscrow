@@ -4,6 +4,15 @@
  * @author Principal Architect
  * @version 1.0.0
  */
+import { auth } from "./js/firebase.js";
+
+import {
+    signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    OAuthProvider,
+    signInWithPopup
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
 
 import {
     auth,
@@ -470,6 +479,73 @@ class LoginController {
         };
     }
 }
+const microsoftBtn = document.getElementById("microsoftSignIn");
+
+if (microsoftBtn) {
+
+    microsoftBtn.addEventListener("click", async () => {
+
+        try {
+
+            microsoftBtn.disabled = true;
+
+            const provider = new OAuthProvider("microsoft.com");
+
+            const result = await signInWithPopup(auth, provider);
+
+            console.log(result.user);
+
+            window.location.href = "dashboard.html";
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(error.message);
+
+        } finally {
+
+            microsoftBtn.disabled = false;
+
+        }
+
+    });
+
+}
+
+const googleBtn = document.getElementById("googleSignIn");
+
+if (googleBtn) {
+    googleBtn.addEventListener("click", async () => {
+
+        try {
+
+            googleBtn.disabled = true;
+
+            const provider = new GoogleAuthProvider();
+
+            const result = await signInWithPopup(auth, provider);
+
+            console.log(result.user);
+
+            window.location.href = "dashboard.html";
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(error.message);
+
+        } finally {
+
+            googleBtn.disabled = false;
+
+        }
+
+    });
+}
+
+
 
 // Initialize the controller when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
