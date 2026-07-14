@@ -512,7 +512,39 @@ if (microsoftBtn) {
     });
 
 }
+// Test users (FOR DEVELOPMENT ONLY)
+const TEST_USERS = [
+    {
+            username: "MetaGie",
+            email: "admin@test.com",
+            password: "Admin123!",
+            role: "admin",
+            fullName: "MetaGie Administrator"
+    },
+    {
+            username: "MetaGie1",
+            email: "user@test.com",
+            password: "User123!",
+            role: "user",
+            fullName: "MetaGie Test User"
+    }
+    ];
+function login(email, password) {
+      const user = TEST_USERS.find(
+              u => u.email === email && u.password === password
+                    );
 
+      if (!user) {
+              alert("Invalid email or password.");
+              return;
+      }
+
+      if (user.role === "admin") {
+              window.location.href = "admin.html";
+      } else {
+              window.location.href = "dashboard.html";
+      }
+}
 const googleBtn = document.getElementById("googleSignIn");
 
 if (googleBtn) {
