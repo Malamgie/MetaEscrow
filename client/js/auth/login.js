@@ -263,7 +263,7 @@ class LoginController {
         setTimeout(() => {
             switch (role) {
                 case 'admin':
-                    window.location.href = '/admin.html';
+                    window.location.href = '/client/admin.html';
                     break;
                 case 'moderator':
                     window.location.href = '/moderator.html';
@@ -273,7 +273,7 @@ class LoginController {
                     break;
                 case 'user':
                 default:
-                    window.location.href = '/dashboard.html';
+                    window.location.href = '/client/dashboard.html';
                     break;
             }
         }, 1000);
@@ -495,7 +495,7 @@ if (microsoftBtn) {
 
             console.log(result.user);
 
-            window.location.href = "dashboard.html";
+            window.location.href = "./client/dashboard.html";
 
         } catch (error) {
 
@@ -528,7 +528,7 @@ if (googleBtn) {
 
             console.log(result.user);
 
-            window.location.href = "dashboard.html";
+            window.location.href = "./client/dashboard.html";
 
         } catch (error) {
 
