@@ -5,7 +5,7 @@ javascript
  * @author Principal Architect
  * @version 1.0.0
  */
-import { auth, db } from "./firebase.js";
+import { auth, db } from "js/firebase.js";
 import {
     auth,
     db,
@@ -16,7 +16,7 @@ import {
     getDoc,
     runTransaction,
     serverTimestamp
-} from './firebase.js';
+} from 'js/firebase.js';
 
 class RegistrationController {
     constructor() {
@@ -111,7 +111,7 @@ class RegistrationController {
             
             // Redirect to dashboard or email verification phase
             setTimeout(() => {
-                window.location.href = '/dashboard.html';
+                window.location.href = 'client/dashboard.html';
             }, 2000);
 
         } catch (error) {
