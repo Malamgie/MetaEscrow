@@ -15,9 +15,9 @@ import {
     onSnapshot,
     getDocs,
     doc
-} from './firebase.js';
+} from 'js/firebase.js';
 
-import { CurrentUser } from './authGuard.js';
+import { CurrentUser } from 'js/auth/authGuard.js';
 
 class DashboardController {
     constructor() {
