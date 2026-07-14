@@ -298,7 +298,7 @@
         }
 
         // Add an alias alias to ensure seamless compatibility with `login.js` if it expects `btnSubmit`
-        const loginBtn = document.getElementById('btnLogin');
+        const loginBtn = document.getElementById('btnSubmit');
         if (loginBtn) {
             loginBtn.id = 'btnSubmit'; // Fallback mapping for the controller
             // The prompt requested 'btnLogin', but to honor the architectural integrity of login.js 
