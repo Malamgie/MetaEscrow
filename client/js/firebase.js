@@ -66,3 +66,51 @@ export {
     serverTimestamp
 
 };
+
+import {
+    getAuth,
+    GoogleAuthProvider,
+    OAuthProvider,
+    signInWithPopup
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+const auth = getAuth();
+
+// Google
+const googleProvider = new GoogleAuthProvider();
+
+document.getElementById("googleSignIn").addEventListener("click", async () => {
+    try {
+        const result = await signInWithPopup(auth, googleProvider);
+
+        const user = result.user;
+
+        console.log("Signed in:", user);
+
+        // Redirect
+        window.location.href = "/dashboard.html";
+
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    }
+});
+
+// Microsoft
+const microsoftProvider = new OAuthProvider("microsoft.com");
+
+document.getElementById("microsoftSignIn").addEventListener("click", async () => {
+    try {
+        const result = await signInWithPopup(auth, microsoftProvider);
+
+        const user = result.user;
+
+        console.log("Signed in:", user);
+
+        window.location.href = "/dashboard.html";
+
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
+    }
+});
