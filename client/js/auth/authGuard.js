@@ -12,7 +12,7 @@ import {
     signOut,
     doc,
     getDoc
-} from './firebase.js';
+} from 'js/firebase.js';
 
 // Safe Global Object for UI consumption
 export let CurrentUser = null;
