@@ -20,7 +20,7 @@ import {
     addDoc,
     serverTimestamp,
     startAfter
-} from './firebase.js';
+} from './js/firebase.js';
 
 import { CurrentUser } from './authGuard.js';
 
