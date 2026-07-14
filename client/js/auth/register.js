@@ -5,7 +5,7 @@ javascript
  * @author Principal Architect
  * @version 1.0.0
  */
-
+import { auth, db } from "./firebase.js";
 import {
     auth,
     db,
