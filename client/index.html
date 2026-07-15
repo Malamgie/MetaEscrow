@@ -47,6 +47,7 @@
     </script>
 
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="db.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased selection:bg-brand-500 selection:text-white relative">
 
@@ -67,7 +68,7 @@
                     <a href="#security" class="text-gray-600 hover:text-brand-600 font-medium transition-colors">Security</a>
                 </nav>
 
-                <div class="hidden md:flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-4" id="desktop-auth-nav">
                     <a href="login.html" class="text-gray-600 hover:text-gray-900 font-medium px-4 py-2 transition-colors">Login</a>
                     <a href="register.html" class="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-lg">Create Account</a>
                 </div>
@@ -86,7 +87,7 @@
                 <a href="#features" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-600 hover:bg-gray-50">Features</a>
                 <a href="#marketplace" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-600 hover:bg-gray-50">Marketplace</a>
                 <a href="#security" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-600 hover:bg-gray-50">Security</a>
-                <div class="pt-4 flex flex-col gap-3 px-3">
+                <div class="pt-4 flex flex-col gap-3 px-3" id="mobile-auth-nav">
                     <a href="login.html" class="w-full text-center border border-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium">Login</a>
                     <a href="register.html" class="w-full text-center bg-gray-900 text-white px-4 py-3 rounded-xl font-medium">Create Account</a>
                 </div>
@@ -341,8 +342,8 @@
                         <div class="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mb-4 text-accent-400">
                             <i data-lucide="database" class="w-8 h-8"></i>
                         </div>
-                        <h4 class="font-semibold mb-1">Firebase Auth</h4>
-                        <p class="text-xs text-gray-400">Secure Cloud Infrastructure</p>
+                        <h4 class="font-semibold mb-1">Offline LocalDB</h4>
+                        <p class="text-xs text-gray-400">Secure Browser Storage</p>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center mb-4 text-purple-400">
@@ -632,6 +633,32 @@
                 header.classList.add('shadow-sm');
             } else {
                 header.classList.remove('shadow-sm');
+            }
+        });
+
+        // Update Authentication Navigation State
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof getCurrentUser === 'function') {
+                const currentUser = getCurrentUser();
+                if (currentUser) {
+                    const dashboardLink = currentUser.role === 'Admin' ? 'admin.html' : 'dashboard.html';
+                    
+                    const desktopAuth = document.getElementById('desktop-auth-nav');
+                    if (desktopAuth) {
+                        desktopAuth.innerHTML = `
+                            <a href="${dashboardLink}" class="text-gray-600 hover:text-brand-600 font-medium px-4 py-2 transition-colors">Dashboard</a>
+                            <button onclick="logout()" class="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md hover:shadow-lg">Logout</button>
+                        `;
+                    }
+
+                    const mobileAuth = document.getElementById('mobile-auth-nav');
+                    if (mobileAuth) {
+                        mobileAuth.innerHTML = `
+                            <a href="${dashboardLink}" class="w-full text-center border border-gray-200 text-gray-700 px-4 py-3 rounded-xl font-medium">Dashboard</a>
+                            <button onclick="logout()" class="w-full text-center bg-gray-900 text-white px-4 py-3 rounded-xl font-medium">Logout</button>
+                        `;
+                    }
+                }
             }
         });
     </script>
