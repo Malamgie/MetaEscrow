@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | MetaEscrow</title>
+    <meta name="description" content="Stay updated with your secure transactions, wallet activities, and account alerts on MetaEscrow.">
+    <link rel="canonical" href="https://www.metaescrow.com.ng/notifications">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981', // Emerald
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                        },
+                        accent: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- LocalStorage Service -->
+    <script src="db.js"></script>
+</head>
+<body class="font-sans antialiased text-gray-900 flex h-screen overflow-hidden selection:bg-brand-500 selection:text-white">
+
+    <!-- Global Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-[100] flex flex-col items-center justify-center transition-opacity duration-300">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/30 animate-pulse mb-4">
+            <i data-lucide="shield-check" class="text-white w-7 h-7"></i>
+        </div>
+        <div class="w-8 h-8 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin"></div>
+        <p class="mt-4 text-sm font-medium text-gray-700">Loading alerts...</p>
+    </div>
+
+    <!-- LEFT SIDEBAR -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-gray-900 text-gray-300 transition-transform -translate-x-full lg:translate-x-0 flex flex-col h-full border-r border-gray-800">
+        <!-- Branding -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-800 bg-gray-950">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-accent-500 flex items-center justify-center shadow-lg mr-3">
+                <i data-lucide="shield-check" class="text-white w-5 h-5"></i>
+            </div>
+            <span class="font-bold text-xl tracking-tight text-white">Meta<span class="text-brand-500">Escrow</span></span>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <a href="dashboard.html" class="flex items-center px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 group-hover:text-brand-400"></i> Dashboard
+            </a>
+            <a href="marketplace.html" class="flex items-center px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <i data-lucide="store" class="w-5 h-5 mr-3 group-hover:text-brand-400"></i> Marketplace
+            </a>
+            <a href="escrow.html" class="flex items-center px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <i data-lucide="briefcase" class="w-5 h-5 mr-3 group-hover:text-brand-400"></i> Escrows
+            </a>
+            <a href="wallet.html" class="flex items-center px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <i data-lucide="wallet" class="w-5 h-5 mr-3 group-hover:text-brand-400"></i> Wallet
+            </a>
+            <a href="profile.html" class="flex items-center px-3 py-2.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-xl font-medium transition-colors group">
+                <i data-lucide="user" class="w-5 h-5 mr-3 group-hover:text-brand-400"></i> Profile
+            </a>
+            <a href="notifications.html" class="flex items-center justify-between px-3 py-2.5 bg-brand-600 text-white rounded-xl font-medium shadow-sm shadow-brand-500/20 group">
+                <div class="flex items-center">
+                    <i data-lucide="bell" class="w-5 h-5 mr-3"></i> Notifications
+                </div>
+                <span id="sidebarNotificationBadge" class="hidden bg-white text-brand-700 text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            </a>
+        </nav>
+
+        <!-- Bottom Actions -->
+        <div class="p-4 border-t border-gray-800">
+            <a href="support.html" class="flex items-center px-3 py-2 text-gray-400 hover:text-white transition-colors text-sm mb-2">
+                <i data-lucide="help-circle" class="w-4 h-4 mr-3"></i> Support & FAQ
+            </a>
+            <button id="logoutButton" class="w-full flex items-center px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-colors text-sm font-medium focus:outline-none">
+                <i data-lucide="log-out" class="w-4 h-4 mr-3"></i> Secure Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <div class="flex-1 flex flex-col lg:ml-64 w-full h-full overflow-hidden relative">
+        
+        <!-- TOP NAVIGATION -->
+        <header id="topNavbar" class="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-100 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center">
+                <button id="btnMobileMenu" class="lg:hidden p-2 -ml-2 mr-2 text-gray-600 hover:text-gray-900 focus:outline-none rounded-lg focus:ring-2 focus:ring-brand-500">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <h1 class="font-bold text-lg text-gray-900 hidden sm:block">Notification Center</h1>
+            </div>
+
+            <div class="flex items-center gap-3 sm:gap-5">
+                <!-- Profile Dropdown Trigger -->
+                <div class="relative">
+                    <button id="profileMenuToggle" class="flex items-center gap-2 focus:outline-none pl-2 border-l border-gray-200">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-100 to-brand-50 border border-brand-200 flex items-center justify-center overflow-hidden">
+                            <i data-lucide="user" class="w-4 h-4 text-brand-600"></i>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 hidden sm:block"></i>
+                    </button>
+                    <!-- Profile Menu Dropdown -->
+                    <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                        <div class="px-4 py-2 border-b border-gray-100">
+                            <p class="text-sm font-medium text-gray-900 truncate data-skeleton bg-gray-200 rounded animate-pulse h-4 w-24"></p>
+                            <p id="navUserName" class="text-sm font-medium text-gray-900 truncate data-content hidden">Loading...</p>
+                            <p class="text-xs text-gray-500 truncate data-skeleton bg-gray-200 rounded animate-pulse h-3 w-16 mt-1"></p>
+                            <p id="navPublicUserId" class="text-xs text-gray-500 truncate data-content hidden">MES-...</p>
+                        </div>
+                        <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"><i data-lucide="user" class="w-4 h-4 inline mr-2 text-gray-400"></i> My Profile</a>
+                        <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"><i data-lucide="settings" class="w-4 h-4 inline mr-2 text-gray-400"></i> Settings</a>
+                        <button id="dropdownLogoutButton" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50 focus:outline-none"><i data-lucide="log-out" class="w-4 h-4 inline mr-2 text-red-400"></i> Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE MAIN CONTENT -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            <div class="max-w-4xl mx-auto space-y-6">
+                
+                <!-- Page Header -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-48 h-48 bg-brand-50 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                            <i data-lucide="bell-ring" class="w-6 h-6 text-brand-600"></i> Activity Alerts
+                        </h2>
+                        <p class="text-sm text-gray-500 mt-1">Stay updated on your escrows, funding requests, and account security.</p>
+                    </div>
+                    <div class="relative z-10 flex gap-3 w-full sm:w-auto">
+                        <button id="btnMarkAllRead" onclick="markAllAsRead()" class="flex-1 sm:flex-none px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl text-sm font-semibold shadow-sm hover:bg-gray-50 transition-all focus:outline-none">
+                            Mark all as read
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notifications List -->
+                <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden min-h-[400px] flex flex-col">
+                    
+                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex gap-4">
+                        <button class="text-sm font-bold text-brand-600 border-b-2 border-brand-600 pb-1">All Notifications</button>
+                        <button class="text-sm font-medium text-gray-500 hover:text-gray-900 pb-1 transition-colors">Unread <span id="tabUnreadBadge" class="bg-gray-200 text-gray-700 text-xs px-1.5 py-0.5 rounded-full ml-1 hidden data-content">0</span></button>
+                    </div>
+
+                    <!-- Skeleton Loader -->
+                    <div id="notificationsSkeleton" class="p-6 space-y-6">
+                        <div class="flex gap-4 animate-pulse">
+                            <div class="w-12 h-12 rounded-full bg-gray-200 shrink-0"></div>
+                            <div class="flex-1 space-y-3 py-1">
+                                <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+                                <div class="h-3 bg-gray-100 rounded w-3/4"></div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 animate-pulse">
+                            <div class="w-12 h-12 rounded-full bg-gray-200 shrink-0"></div>
+                            <div class="flex-1 space-y-3 py-1">
+                                <div class="h-4 bg-gray-200 rounded w-1/3"></div>
+                                <div class="h-3 bg-gray-100 rounded w-1/2"></div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 animate-pulse">
+                            <div class="w-12 h-12 rounded-full bg-gray-200 shrink-0"></div>
+                            <div class="flex-1 space-y-3 py-1">
+                                <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+                                <div class="h-3 bg-gray-100 rounded w-2/3"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Container -->
+                    <div id="notificationsContainer" class="flex-1 flex flex-col divide-y divide-gray-50 hidden data-content">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden flex-col items-center justify-center py-20 px-4 text-center data-content">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                            <i data-lucide="bell-off" class="w-10 h-10 text-gray-300"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">You're all caught up!</h3>
+                        <p class="text-sm text-gray-500 max-w-sm">There are currently no new notifications or alerts for your account.</p>
+                    </div>
+
+                </section>
+                
+            </div>
+        </main>
+    </div>
+
+    <!-- UI/UX and LocalStorage Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render Icons
+            lucide.createIcons();
+
+            // 1. Auth Guard
+            const currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Hydrate Header User UI
+            const navUserName = document.getElementById('navUserName');
+            const navPublicUserId = document.getElementById('navPublicUserId');
+            if(navUserName) {
+                navUserName.textContent = currentUser.name;
+                navUserName.classList.remove('hidden');
+            }
+            if(navPublicUserId) {
+                navPublicUserId.textContent = currentUser.id;
+                navPublicUserId.classList.remove('hidden');
+            }
+
+            // Mobile Sidebar Toggle
+            const btnMobileMenu = document.getElementById('btnMobileMenu');
+            const sidebar = document.getElementById('sidebar');
+            if (btnMobileMenu && sidebar) {
+                btnMobileMenu.addEventListener('click', () => {
+                    sidebar.classList.toggle('-translate-x-full');
+                });
+            }
+
+            // Profile Dropdown Toggle
+            const profileMenuToggle = document.getElementById('profileMenuToggle');
+            const profileMenu = document.getElementById('profileMenu');
+            if (profileMenuToggle && profileMenu) {
+                profileMenuToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    profileMenu.classList.toggle('hidden');
+                });
+                
+                document.addEventListener('click', (e) => {
+                    if (!profileMenuToggle.contains(e.target) && !profileMenu.contains(e.target)) {
+                        profileMenu.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Logout Logic
+            const handleLogout = () => {
+                if (typeof logout === 'function') logout();
+            };
+            document.getElementById('logoutButton').addEventListener('click', handleLogout);
+            document.getElementById('dropdownLogoutButton')?.addEventListener('click', handleLogout);
+
+            // ==========================================
+            // NOTIFICATIONS LOGIC (LocalStorage)
+            // ==========================================
+
+            // Helper to determine icon and colors based on notification title/type
+            const getIconDetails = (title) => {
+                const t = title.toLowerCase();
+                if (t.includes('welcome') || t.includes('setup')) {
+                    return { icon: 'party-popper', color: 'bg-purple-100 text-purple-600' };
+                } else if (t.includes('escrow') || t.includes('transaction')) {
+                    return { icon: 'briefcase', color: 'bg-blue-100 text-blue-600' };
+                } else if (t.includes('fund') || t.includes('wallet') || t.includes('withdraw')) {
+                    return { icon: 'wallet', color: 'bg-green-100 text-green-600' };
+                } else if (t.includes('dispute') || t.includes('alert')) {
+                    return { icon: 'alert-triangle', color: 'bg-red-100 text-red-600' };
+                } else if (t.includes('kyc') || t.includes('verif')) {
+                    return { icon: 'shield-check', color: 'bg-amber-100 text-amber-600' };
+                }
+                return { icon: 'bell', color: 'bg-gray-100 text-gray-600' }; // Default
+            };
+
+            const timeAgo = (dateStr) => {
+                const date = new Date(dateStr);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMins / 60);
+                const diffDays = Math.floor(diffHours / 24);
+
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins} min ago`;
+                if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+                if (diffDays === 1) return 'Yesterday';
+                return date.toLocaleDateString('en-NG', { month: 'short', day: 'numeric' });
+            };
+
+            window.loadNotificationData = function() {
+                const allNotifs = loadData(DB_KEYS.NOTIFICATIONS) || [];
+                const userNotifs = allNotifs.filter(n => n.userId === currentUser.id).sort((a,b) => new Date(b.date) - new Date(a.date));
+                const unreadCount = userNotifs.filter(n => !n.read).length;
+
+                const skeleton = document.getElementById('notificationsSkeleton');
+                const container = document.getElementById('notificationsContainer');
+                const emptyState = document.getElementById('emptyState');
+                
+                // Update Badges
+                const sidebarBadge = document.getElementById('sidebarNotificationBadge');
+                const tabBadge = document.getElementById('tabUnreadBadge');
+                
+                if (unreadCount > 0) {
+                    sidebarBadge.textContent = unreadCount;
+                    sidebarBadge.classList.remove('hidden');
+                    tabBadge.textContent = unreadCount;
+                    tabBadge.classList.remove('hidden');
+                } else {
+                    sidebarBadge.classList.add('hidden');
+                    tabBadge.classList.add('hidden');
+                }
+
+                // Render Content
+                if (userNotifs.length === 0) {
+                    skeleton.classList.add('hidden');
+                    container.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                    emptyState.classList.add('flex');
+                } else {
+                    skeleton.classList.add('hidden');
+                    emptyState.classList.add('hidden');
+                    emptyState.classList.remove('flex');
+                    container.classList.remove('hidden');
+                    
+                    container.innerHTML = '';
+                    
+                    userNotifs.forEach(notif => {
+                        const { icon, color } = getIconDetails(notif.title);
+                        const isReadClass = notif.read ? 'bg-white' : 'bg-brand-50/30';
+                        const textWeightClass = notif.read ? 'font-medium text-gray-900' : 'font-bold text-gray-900';
+                        const borderIndicator = notif.read ? '' : '<div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-500"></div>';
+                        
+                        const actionBtn = notif.read 
+                            ? `<button onclick="deleteNotification('${notif.id}')" class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-gray-100 focus:outline-none" aria-label="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`
+                            : `<button onclick="markAsRead('${notif.id}')" class="text-brand-600 hover:text-brand-800 text-xs font-bold transition-colors px-3 py-1.5 rounded-lg hover:bg-brand-50 focus:outline-none">Mark as read</button>`;
+
+                        container.innerHTML += `
+                            <div class="relative flex gap-4 p-5 sm:p-6 transition-colors hover:bg-gray-50 ${isReadClass}">
+                                ${borderIndicator}
+                                <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${color}">
+                                    <i data-lucide="${icon}" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 mb-1">
+                                        <h4 class="text-base ${textWeightClass}">${notif.title}</h4>
+                                        <span class="text-xs text-gray-500 whitespace-nowrap">${timeAgo(notif.date)}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 leading-relaxed mb-3">${notif.message}</p>
+                                    <div class="flex items-center justify-end">
+                                        ${actionBtn}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    lucide.createIcons();
+                }
+
+                // Unhide hydrated structural elements
+                document.querySelectorAll('.data-content').forEach(el => el.classList.remove('hidden'));
+            };
+
+            window.markAsRead = function(id) {
+                const notifs = loadData(DB_KEYS.NOTIFICATIONS) || [];
+                const idx = notifs.findIndex(n => n.id === id);
+                if(idx !== -1) {
+                    notifs[idx].read = true;
+                    saveData(DB_KEYS.NOTIFICATIONS, notifs);
+                    loadNotificationData();
+                }
+            };
+
+            window.markAllAsRead = function() {
+                const notifs = loadData(DB_KEYS.NOTIFICATIONS) || [];
+                let changed = false;
+                notifs.forEach(n => {
+                    if(n.userId === currentUser.id && !n.read) {
+                        n.read = true;
+                        changed = true;
+                    }
+                });
+                
+                if(changed) {
+                    saveData(DB_KEYS.NOTIFICATIONS, notifs);
+                    loadNotificationData();
+                }
+            };
+
+            window.deleteNotification = function(id) {
+                if(!confirm("Delete this notification?")) return;
+                const notifs = loadData(DB_KEYS.NOTIFICATIONS) || [];
+                const filtered = notifs.filter(n => n.id !== id);
+                saveData(DB_KEYS.NOTIFICATIONS, filtered);
+                loadNotificationData();
+            };
+
+            // Initial Load with artificial delay for prototype smooth UX
+            setTimeout(() => {
+                const overlay = document.getElementById('loadingOverlay');
+                if (overlay) overlay.classList.add('hidden');
+                loadNotificationData();
+            }, 600);
+        });
+    </script>
+</body>
+</html>
