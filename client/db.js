@@ -7,7 +7,10 @@ const DB_KEYS = {
     TRANSACTIONS: 'metaescrow_transactions',
     WALLETS: 'metaescrow_wallets',
     NOTIFICATIONS: 'metaescrow_notifications',
-    SETTINGS: 'metaescrow_settings'
+    SETTINGS: 'metaescrow_settings',
+    MARKETPLACE: 'metaescrow_marketplace',
+    SUPPORT: 'metaescrow_support',
+    WALLET_REQUESTS: 'metaescrow_wallet_requests'
 };
 
 // ==========================================
@@ -114,7 +117,7 @@ function initializeDatabase() {
             status: 'Active',
             verified: true,
             walletBalance: 25000,
-            kyc: 'Verified',
+            kyc: 'Pending', // Set to pending to demonstrate KYC approval in Admin Panel
             profilePhoto: 'Default avatar',
             createdAt: new Date().toISOString()
         };
@@ -128,6 +131,7 @@ function initializeDatabase() {
             seller: 'USR0002',
             title: 'MacBook Pro M2',
             description: 'Used MacBook Pro M2 256GB in pristine condition.',
+            category: 'electronics',
             amount: 450000,
             fee: 4500,
             status: 'Pending',
@@ -146,19 +150,43 @@ function initializeDatabase() {
             { userId: 'USR0002', balance: 25000, history: [{ id: generateId('TXN'), type: 'Credit', amount: 25000, description: 'Initial Funding', date: new Date().toISOString() }] }
         ]);
 
-        // 6. Sample Notifications
-        saveData(DB_KEYS.NOTIFICATIONS, [
-            { id: generateId('NOT'), userId: 'ADM0001', title: 'System Setup', message: 'Prototype architecture initialized securely.', date: new Date().toISOString(), read: false },
-            { id: generateId('NOT'), userId: 'USR0001', title: 'Welcome', message: 'Your MetaEscrow account is ready.', date: new Date().toISOString(), read: false },
-            { id: generateId('NOT'), userId: 'USR0002', title: 'Welcome', message: 'Your MetaEscrow account is ready.', date: new Date().toISOString(), read: false }
+        // 6. Sample Wallet Requests (Pending manual approval)
+        saveData(DB_KEYS.WALLET_REQUESTS, [
+            { id: generateId('REQ'), userId: 'USR0001', type: 'Deposit', amount: 50000, method: 'Bank Transfer', proof: 'https://example.com/receipt.jpg', status: 'Pending', date: new Date().toISOString() },
+            { id: generateId('REQ'), userId: 'USR0002', type: 'Withdrawal', amount: 10000, accountName: 'Dalladi Tech', bankName: 'Access Bank', accountNumber: '0123456789', status: 'Pending', date: new Date().toISOString() }
         ]);
 
-        // 7. Core Settings
-        saveData(DB_KEYS.SETTINGS, { platformFeePercent: 1.0 });
+        // 7. Sample Marketplace Listings
+        saveData(DB_KEYS.MARKETPLACE, [
+            { id: generateId('PRD'), sellerId: 'ADM0001', sellerName: 'MetaGie', title: 'Apple MacBook Pro 16" M2 Max', price: 2850000, category: 'electronics', location: 'lagos', rating: 4.9, sales: 124, img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80', condition: 'Like New', verified: true, status: 'Active', createdDate: new Date().toISOString() },
+            { id: generateId('PRD'), sellerId: 'USR0001', sellerName: 'Maya John', title: 'Nike Air Max 2023 - Premium', price: 85000, category: 'fashion', location: 'abuja', rating: 4.5, sales: 12, img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80', condition: 'Brand New', verified: true, status: 'Active', createdDate: new Date().toISOString() }
+        ]);
+
+        // 8. Sample Support Tickets
+        saveData(DB_KEYS.SUPPORT, [
+            { id: generateId('TKT'), userId: 'USR0001', subject: 'Need help releasing funds', category: 'Escrow', message: 'I have inspected the item and want to release funds but the button is grayed out.', status: 'Open', date: new Date().toISOString(), replies: [] }
+        ]);
+
+        // 9. Sample Notifications
+        saveData(DB_KEYS.NOTIFICATIONS, [
+            { id: generateId('NOT'), userId: 'ADM0001', title: 'System Setup', message: 'Prototype architecture initialized securely.', date: new Date().toISOString(), read: false },
+            { id: generateId('NOT'), userId: 'USR0001', title: 'Welcome', message: 'Your MetaEscrow account is ready. Please complete KYC.', date: new Date().toISOString(), read: false },
+            { id: generateId('NOT'), userId: 'USR0002', title: 'Welcome', message: 'Your MetaEscrow account is ready. Please complete KYC.', date: new Date().toISOString(), read: false }
+        ]);
+
+        // 10. Core Settings (Including Admin Bank Details)
+        saveData(DB_KEYS.SETTINGS, { 
+            platformFeePercent: 1.0,
+            adminBankDetails: {
+                accountNumber: '7086676866',
+                accountName: 'Aliyu Garba Musa',
+                bankName: 'OPAY'
+            }
+        });
 
         console.log("MetaEscrow LocalStorage offline database initialized successfully.");
     }
 }
 
 // Automatically bootstrap database if empty on page load
-initializeDatabase(); 
+initializeDatabase();
