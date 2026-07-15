@@ -43,7 +43,6 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- LocalStorage Service -->
     <script src="db.js"></script>
 </head>
 <body class="font-sans antialiased text-gray-900 flex flex-col min-h-screen selection:bg-brand-500 selection:text-white">
@@ -78,6 +77,10 @@
                 </div>
 
                 <div class="flex items-center gap-4">
+                    <button id="createListingNavBtn" class="hidden md:flex px-4 py-2 bg-brand-600 text-white rounded-xl text-sm font-semibold shadow-md hover:bg-brand-700 transition-colors items-center gap-1.5 focus:outline-none">
+                        <i data-lucide="plus" class="w-4 h-4"></i> List Item
+                    </button>
+
                     <a href="notifications.html" class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors focus:outline-none" aria-label="Notifications">
                         <i data-lucide="bell" class="w-5 h-5"></i>
                         <span id="notificationBadge" class="hidden absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
@@ -90,7 +93,6 @@
                             </div>
                             <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 hidden sm:block"></i>
                         </button>
-                        <!-- Profile Menu Dropdown -->
                         <div id="profileMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
                             <div class="px-4 py-2 border-b border-gray-100">
                                 <p class="text-sm font-medium text-gray-900 truncate data-skeleton bg-gray-200 rounded animate-pulse h-4 w-24"></p>
@@ -115,6 +117,9 @@
             </div>
             <input type="text" id="searchInputMobile" class="block w-full pl-10 pr-3 py-2.5 bg-gray-100 border-transparent rounded-xl text-sm placeholder-gray-500 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-200 transition-all outline-none" placeholder="Search marketplace...">
         </div>
+        <button id="createListingMobileBtn" class="mt-3 w-full py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold shadow-md hover:bg-brand-700 transition-colors flex justify-center items-center gap-1.5">
+            <i data-lucide="plus" class="w-4 h-4"></i> List an Item
+        </button>
     </div>
 
     <section class="bg-gray-900 text-white relative overflow-hidden">
@@ -160,6 +165,10 @@
                     <label class="flex items-center gap-3 cursor-pointer group">
                         <input type="radio" name="category" value="electronics" class="text-brand-600 focus:ring-brand-500 w-4 h-4 border-gray-300">
                         <span class="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">Electronics</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <input type="radio" name="category" value="fashion" class="text-brand-600 focus:ring-brand-500 w-4 h-4 border-gray-300">
+                        <span class="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">Fashion</span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer group">
                         <input type="radio" name="category" value="vehicles" class="text-brand-600 focus:ring-brand-500 w-4 h-4 border-gray-300">
@@ -239,15 +248,9 @@
                 <div class="text-sm font-medium">Unable to load marketplace data. Please check your connection.</div>
             </div>
 
-            <div id="featuredProducts" class="mb-8 hidden">
-            </div>
-
-            <!-- Dynamic Product Grid Container -->
             <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 hidden">
-                <!-- Javascript will populate this section dynamically -->
-            </div>
+                </div>
 
-            <!-- Loading State -->
             <div id="loadingContainer" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 animate-pulse">
                     <div class="w-full aspect-[4/3] bg-gray-200 rounded-xl mb-4"></div>
@@ -290,19 +293,95 @@
         </div>
     </main>
 
-    <div id="productModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true"></div>
+    <div id="createListingModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-listing" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity ui-modal-close" aria-hidden="true"></div>
         
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+                
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <h3 class="text-lg font-bold text-gray-900">Create New Listing</h3>
+                    <button type="button" class="text-gray-400 hover:text-gray-600 ui-modal-close focus:outline-none">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <div id="kycWarning" class="hidden p-6 text-center">
+                    <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="shield-alert" class="w-8 h-8 text-amber-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Verification Required</h3>
+                    <p class="text-sm text-gray-600 mb-6">To maintain a safe marketplace, all sellers must complete their identity verification (KYC) before listing products.</p>
+                    <a href="profile.html" class="inline-block px-6 py-3 bg-brand-600 text-white rounded-xl font-bold shadow-md hover:bg-brand-700 transition-colors">Go to Verification Center</a>
+                </div>
+
+                <form id="formCreateListing" class="px-6 py-6 space-y-5 hidden">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Product Title</label>
+                        <input type="text" id="listTitle" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" placeholder="e.g. MacBook Pro M2 2023">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Price (₦)</label>
+                            <input type="number" id="listPrice" required min="1000" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" placeholder="Enter amount">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                            <select id="listCategory" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all appearance-none">
+                                <option value="electronics">Electronics</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="vehicles">Vehicles</option>
+                                <option value="real_estate">Real Estate</option>
+                                <option value="services">Services</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Condition</label>
+                            <select id="listCondition" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all appearance-none">
+                                <option value="Brand New">Brand New</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Used">Used</option>
+                                <option value="Refurbished">Refurbished</option>
+                                <option value="Service">Service</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                            <select id="listLocation" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all appearance-none">
+                                <option value="lagos">Lagos</option>
+                                <option value="abuja">Abuja</option>
+                                <option value="port_harcourt">Port Harcourt</option>
+                                <option value="kano">Kano</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                        <input type="url" id="listImage" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" placeholder="https://source.unsplash.com/random">
+                    </div>
+                    
+                    <div class="pt-4 flex gap-3">
+                        <button type="button" class="flex-1 px-4 py-3 bg-white border border-gray-200 text-gray-700 rounded-xl font-medium shadow-sm hover:bg-gray-50 ui-modal-close focus:outline-none">Cancel</button>
+                        <button type="submit" id="btnSubmitListing" class="flex-1 px-4 py-3 bg-brand-600 text-white rounded-xl font-bold shadow-md hover:bg-brand-700 transition-colors focus:outline-none flex justify-center items-center gap-2">
+                            Publish Listing
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="productModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity ui-modal-close" aria-hidden="true"></div>
         <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-4xl">
-                <button type="button" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors z-10 focus:outline-none" onclick="document.getElementById('productModal').classList.add('hidden')">
+            <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md">
+                <button type="button" class="absolute right-4 top-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors z-10 focus:outline-none ui-modal-close">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
-                
-                <div class="p-8 text-center text-gray-500">
-                    <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto text-brand-500 mb-2"></i>
-                    Loading product details securely...
-                </div>
+                <div class="p-8 text-center" id="productModalContent">
+                    </div>
             </div>
         </div>
     </div>
@@ -325,7 +404,6 @@
         </div>
     </footer>
 
-    <!-- Integrated Marketplace Logic -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Initial setup
@@ -392,22 +470,12 @@
             }
 
             // ==========================================
-            // MOCK MARKETPLACE DATA (In Memory)
+            // MARKETPLACE LOGIC
             // ==========================================
-            const mockProducts = [
-                { id: 1, title: 'Apple MacBook Pro 16" M2 Max (2023) - 32GB RAM', price: 2850000, category: 'electronics', location: 'lagos', rating: 4.9, sales: 124, seller: 'TechHaven NG', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80', condition: 'Like New', verified: true, avatar: 'https://i.pravatar.cc/150?img=11', initials: '' },
-                { id: 2, title: 'Nike Air Max 2023 - Premium Edition (Size 42)', price: 85000, category: 'fashion', location: 'abuja', rating: 0, sales: 0, seller: 'Emeka Kalu', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&q=80', condition: 'Brand New', verified: false, avatar: '', initials: 'EK' },
-                { id: 3, title: 'Sony PlayStation 5 Disc Edition + 2 Controllers', price: 650000, category: 'electronics', location: 'lagos', rating: 4.8, sales: 45, seller: 'GameWorld', img: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=500&q=80', condition: 'Brand New', verified: true, avatar: 'https://i.pravatar.cc/150?img=12', initials: '' },
-                { id: 4, title: 'Toyota Camry 2018 XSE', price: 14500000, category: 'vehicles', location: 'port_harcourt', rating: 4.5, sales: 12, seller: 'AutoTrust', img: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fd?auto=format&fit=crop&w=500&q=80', condition: 'Foreign Used', verified: true, avatar: '', initials: 'AT' },
-                { id: 5, title: 'Professional Web Development Services', price: 150000, category: 'services', location: 'all', rating: 5.0, sales: 89, seller: 'CodeCraft', img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=500&q=80', condition: 'Service', verified: true, avatar: 'https://i.pravatar.cc/150?img=15', initials: '' },
-                { id: 6, title: 'Luxury 4 Bedroom Duplex in Lekki Phase 1', price: 120000000, category: 'real_estate', location: 'lagos', rating: 4.7, sales: 3, seller: 'Prime Homes', img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=500&q=80', condition: 'Newly Built', verified: true, avatar: '', initials: 'PH' }
-            ];
-
             const productGrid = document.getElementById('productGrid');
             const loadingContainer = document.getElementById('loadingContainer');
             const emptyState = document.getElementById('emptyState');
             const pagination = document.getElementById('pagination');
-
             const formatter = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 });
 
             // Generate HTML for a product card precisely mimicking original UI
@@ -419,7 +487,7 @@
 
                 const avatarHtml = product.avatar 
                     ? `<img src="${product.avatar}" alt="Seller" class="w-8 h-8 rounded-full bg-gray-200">`
-                    : `<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500">${product.initials}</div>`;
+                    : `<div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-500">${product.initials || 'S'}</div>`;
 
                 let categoryLabel = product.category.replace('_', ' ');
                 
@@ -448,7 +516,7 @@
                             ${avatarHtml}
                             <div class="flex-1 min-w-0">
                                 <p class="text-xs font-medium text-gray-900 truncate flex items-center gap-1">
-                                    ${product.seller} ${verifiedBadge}
+                                    ${product.sellerName} ${verifiedBadge}
                                 </p>
                                 <div class="flex items-center text-[10px] text-gray-500 mt-0.5">
                                     ${ratingHtml}
@@ -456,12 +524,12 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-3 mt-auto">
-                            <button class="py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all focus:outline-none" onclick="document.getElementById('productModal').classList.remove('hidden')">
+                            <button class="py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all focus:outline-none" onclick="window.quickView('${product.id}')">
                                 Quick View
                             </button>
-                            <a href="escrow.html" class="py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-brand-500/20 hover:bg-brand-700 transition-all focus:outline-none flex justify-center items-center gap-1">
+                            <button onclick="window.initiateEscrow('${product.id}')" class="py-2.5 bg-brand-600 text-white rounded-xl text-sm font-semibold shadow-md shadow-brand-500/20 hover:bg-brand-700 transition-all focus:outline-none flex justify-center items-center gap-1">
                                 Buy Securely
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </article>`;
@@ -486,7 +554,7 @@
                 }
             }
 
-            // Simulating API Fetch
+            // API Fetch
             function fetchProducts() {
                 productGrid.classList.add('hidden');
                 emptyState.classList.add('hidden');
@@ -495,18 +563,19 @@
 
                 setTimeout(() => {
                     loadingContainer.classList.add('hidden');
-                    applyFilters(); // Initial render handles filters natively
-                }, 800);
+                    applyFilters(); 
+                }, 600);
             }
 
             // Filter Logic
             function applyFilters() {
-                let filtered = [...mockProducts];
+                let products = loadData(DB_KEYS.MARKETPLACE) || [];
+                let filtered = [...products];
                 
                 // Text Search
                 const searchQ = document.getElementById('globalSearch').value.toLowerCase() || document.getElementById('searchInputMobile').value.toLowerCase();
                 if(searchQ) {
-                    filtered = filtered.filter(p => p.title.toLowerCase().includes(searchQ) || p.seller.toLowerCase().includes(searchQ));
+                    filtered = filtered.filter(p => p.title.toLowerCase().includes(searchQ) || p.sellerName.toLowerCase().includes(searchQ));
                 }
 
                 // Category
@@ -540,7 +609,7 @@
                 if(sortMethod === 'price_asc') filtered.sort((a,b) => a.price - b.price);
                 else if (sortMethod === 'price_desc') filtered.sort((a,b) => b.price - a.price);
                 else if (sortMethod === 'rating') filtered.sort((a,b) => b.rating - a.rating);
-                // default 'newest' relies on array index for this mock.
+                else if (sortMethod === 'newest') filtered.sort((a,b) => new Date(b.createdDate) - new Date(a.createdDate));
 
                 renderProducts(filtered);
             }
@@ -567,6 +636,126 @@
 
             // Initial load
             fetchProducts();
+
+            // ==========================================
+            // CREATE LISTING LOGIC
+            // ==========================================
+            const createListingModal = document.getElementById('createListingModal');
+            const kycWarning = document.getElementById('kycWarning');
+            const formCreateListing = document.getElementById('formCreateListing');
+
+            const handleCreateListingClick = () => {
+                createListingModal.classList.remove('hidden');
+                if (currentUser.kyc !== 'Verified') {
+                    kycWarning.classList.remove('hidden');
+                    formCreateListing.classList.add('hidden');
+                } else {
+                    kycWarning.classList.add('hidden');
+                    formCreateListing.classList.remove('hidden');
+                }
+            };
+
+            document.getElementById('createListingNavBtn').addEventListener('click', handleCreateListingClick);
+            document.getElementById('createListingMobileBtn').addEventListener('click', handleCreateListingClick);
+
+            document.querySelectorAll('.ui-modal-close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    createListingModal.classList.add('hidden');
+                    document.getElementById('productModal').classList.add('hidden');
+                });
+            });
+
+            formCreateListing.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const newListing = {
+                    id: generateId('PRD'),
+                    sellerId: currentUser.id,
+                    sellerName: currentUser.name,
+                    title: document.getElementById('listTitle').value,
+                    price: Number(document.getElementById('listPrice').value),
+                    category: document.getElementById('listCategory').value,
+                    condition: document.getElementById('listCondition').value,
+                    location: document.getElementById('listLocation').value,
+                    img: document.getElementById('listImage').value,
+                    rating: 0,
+                    sales: 0,
+                    verified: true, // They are verified if they made it to this form
+                    status: 'Active',
+                    createdDate: new Date().toISOString()
+                };
+
+                const marketplace = loadData(DB_KEYS.MARKETPLACE) || [];
+                marketplace.unshift(newListing);
+                saveData(DB_KEYS.MARKETPLACE, marketplace);
+
+                alert("Listing published successfully!");
+                createListingModal.classList.add('hidden');
+                formCreateListing.reset();
+                fetchProducts(); // Refresh Grid
+            });
+
+            // ==========================================
+            // PRODUCT INTERACTION LOGIC
+            // ==========================================
+            
+            window.quickView = function(id) {
+                const mkp = loadData(DB_KEYS.MARKETPLACE) || [];
+                const product = mkp.find(p => p.id === id);
+                if(!product) return;
+
+                const modalContent = document.getElementById('productModalContent');
+                modalContent.innerHTML = `
+                    <div class="aspect-video w-full rounded-2xl overflow-hidden mb-4 bg-gray-100">
+                        <img src="${product.img}" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">${product.title}</h3>
+                    <p class="text-2xl font-black text-brand-600 mb-4">${formatter.format(product.price)}</p>
+                    <div class="flex items-center justify-center gap-4 text-sm text-gray-600 mb-6">
+                        <span><i data-lucide="tag" class="inline w-4 h-4 mr-1"></i> ${product.condition}</span>
+                        <span><i data-lucide="user" class="inline w-4 h-4 mr-1"></i> ${product.sellerName}</span>
+                    </div>
+                    <button onclick="window.initiateEscrow('${product.id}')" class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold shadow-md hover:bg-gray-800 transition-colors">Proceed to Buy</button>
+                `;
+                
+                lucide.createIcons();
+                document.getElementById('productModal').classList.remove('hidden');
+            };
+
+            window.initiateEscrow = function(id) {
+                const mkp = loadData(DB_KEYS.MARKETPLACE) || [];
+                const product = mkp.find(p => p.id === id);
+                
+                if(!product) return;
+                if(product.sellerId === currentUser.id) {
+                    alert("You cannot buy your own product.");
+                    return;
+                }
+
+                if(confirm(`Create a secure escrow for: ${product.title} at ${formatter.format(product.price)}?`)) {
+                    const newEscrow = {
+                        id: generateId('MES'),
+                        title: product.title,
+                        description: `Marketplace purchase of ${product.title} (${product.id})`,
+                        category: product.category,
+                        inspectionDays: 3, // Default for marketplace
+                        amount: product.price,
+                        buyer: currentUser.id,
+                        seller: product.sellerId,
+                        status: 'Pending',
+                        paymentStatus: 'Unpaid',
+                        releaseStatus: 'Locked',
+                        createdDate: new Date().toISOString()
+                    };
+
+                    const transactions = loadData(DB_KEYS.TRANSACTIONS) || [];
+                    transactions.push(newEscrow);
+                    saveData(DB_KEYS.TRANSACTIONS, transactions);
+
+                    alert("Escrow created successfully! Redirecting you to fund it.");
+                    window.location.href = 'escrow.html';
+                }
+            };
 
         });
     </script>
