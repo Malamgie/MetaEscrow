@@ -26,6 +26,7 @@
         }
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="db.js"></script>
 </head>
 <body class="font-sans antialiased text-gray-900 flex h-screen overflow-hidden">
 
@@ -48,23 +49,23 @@
             
             <section class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6">
                 <div class="relative">
-                    <img id="profilePicture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" 
+                    <img id="profilePicture" src="https://i.pravatar.cc/150?img=11" 
                          class="w-24 h-24 rounded-full border-4 border-gray-100 object-cover bg-gray-200" alt="Profile">
                 </div>
                 <div class="flex-1">
                     <div class="flex flex-col md:flex-row md:items-center gap-3 mb-2">
-                        <h1 id="fullName" class="text-2xl font-bold text-gray-900 data-content hidden">Loading...</h1>
+                        <h1 id="fullNameDisplay" class="text-2xl font-bold text-gray-900 data-content hidden">Loading...</h1>
                         <div class="data-skeleton h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
-                        <span id="verificationStatus" class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full uppercase">Unverified</span>
+                        <span id="verificationBadge" class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full uppercase">Unverified</span>
                     </div>
-                    <p id="username" class="text-gray-500 font-medium mb-4">@...</p>
+                    <p id="usernameDisplay" class="text-gray-500 font-medium mb-4">@...</p>
                     <div class="flex gap-4 text-sm text-gray-600">
                         <span>ID: <strong id="publicUserId">...</strong></span>
                         <span>•</span>
                         <span>Member since 2026</span>
                     </div>
                 </div>
-                <button id="saveProfileButton" class="hidden md:block self-start px-6 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-gray-800">Edit Profile</button>
+                <button id="saveProfileButton" class="hidden md:block self-start px-6 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-md hover:bg-gray-800 focus:outline-none">Edit Profile</button>
             </section>
 
             <div class="grid md:grid-cols-3 gap-6">
@@ -72,11 +73,11 @@
                     <section class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
                         <h2 class="font-bold text-lg mb-6">Account Information</h2>
                         <form id="formUpdateProfile" class="grid sm:grid-cols-2 gap-4">
-                            <div class="sm:col-span-2"><label class="block text-sm text-gray-500 mb-1">Full Name</label><input type="text" id="fullName" class="w-full p-3 bg-gray-50 rounded-xl border"></div>
-                            <div><label class="block text-sm text-gray-500 mb-1">Email</label><input type="email" id="email" disabled class="w-full p-3 bg-gray-100 rounded-xl border"></div>
-                            <div><label class="block text-sm text-gray-500 mb-1">Phone</label><input type="tel" id="phone" class="w-full p-3 bg-gray-50 rounded-xl border"></div>
-                            <div class="sm:col-span-2"><label class="block text-sm text-gray-500 mb-1">Bio</label><textarea id="bio" class="w-full p-3 bg-gray-50 rounded-xl border" rows="3"></textarea></div>
-                            <button type="submit" class="w-max px-6 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm">Save Changes</button>
+                            <div class="sm:col-span-2"><label class="block text-sm text-gray-500 mb-1">Full Name</label><input type="text" id="fullName" class="w-full p-3 bg-gray-50 rounded-xl border focus:outline-none focus:border-brand-500 transition-colors"></div>
+                            <div><label class="block text-sm text-gray-500 mb-1">Email</label><input type="email" id="email" disabled class="w-full p-3 bg-gray-100 rounded-xl border text-gray-500 cursor-not-allowed"></div>
+                            <div><label class="block text-sm text-gray-500 mb-1">Phone</label><input type="tel" id="phone" class="w-full p-3 bg-gray-50 rounded-xl border focus:outline-none focus:border-brand-500 transition-colors"></div>
+                            <div class="sm:col-span-2"><label class="block text-sm text-gray-500 mb-1">Bio</label><textarea id="bio" class="w-full p-3 bg-gray-50 rounded-xl border focus:outline-none focus:border-brand-500 transition-colors resize-none" rows="3" placeholder="Tell us about your business or typical transactions..."></textarea></div>
+                            <button type="submit" class="w-max px-6 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm hover:bg-brand-700 transition-colors focus:outline-none">Save Changes</button>
                         </form>
                     </section>
 
@@ -84,10 +85,10 @@
                         <h2 class="font-bold text-lg mb-4">Verification Center</h2>
                         <p class="text-sm text-gray-500 mb-6 italic">Verified accounts can list products above ₦20,000.</p>
                         <form id="formSubmitKYC" class="space-y-4">
-                            <input type="url" id="nationalId" class="w-full p-3 bg-gray-50 rounded-xl border" placeholder="National ID Image URL">
-                            <input type="url" id="selfie" class="w-full p-3 bg-gray-50 rounded-xl border" placeholder="Selfie Image URL">
-                            <input type="url" id="utilityBill" class="w-full p-3 bg-gray-50 rounded-xl border" placeholder="Utility Bill Image URL">
-                            <button type="submit" class="px-6 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm">Submit Verification</button>
+                            <input type="url" id="nationalId" required class="w-full p-3 bg-gray-50 rounded-xl border focus:outline-none focus:border-brand-500 transition-colors" placeholder="National ID Image URL">
+                            <input type="url" id="selfie" required class="w-full p-3 bg-gray-50 rounded-xl border focus:outline-none focus:border-brand-500 transition-colors" placeholder="Selfie Image URL">
+                            <input type="url" id="utilityBill" required class="w-full p-3 bg-gray-50 rounded-xl border focus:outline-none focus:border-brand-500 transition-colors" placeholder="Utility Bill Image URL">
+                            <button type="submit" id="btnSubmitKYC" class="px-6 py-3 bg-brand-600 text-white rounded-xl font-bold text-sm hover:bg-brand-700 transition-colors focus:outline-none">Submit Verification</button>
                         </form>
                     </section>
                 </div>
@@ -95,16 +96,17 @@
                 <div class="space-y-6">
                     <section class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 text-center">
                         <h2 class="font-bold text-lg mb-4">Trust Score</h2>
-                        <div class="text-4xl font-black text-brand-600 mb-2" id="trustScore">0</div>
-                        <div class="w-full bg-gray-200 rounded-full h-2.5"><div id="verificationProgress" class="bg-brand-600 h-2.5 rounded-full" style="width: 0%"></div></div>
+                        <div class="text-4xl font-black text-brand-600 mb-2 data-content hidden" id="trustScore">0</div>
+                        <div class="data-skeleton h-10 w-16 bg-gray-200 rounded animate-pulse mx-auto mb-2"></div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5"><div id="verificationProgress" class="bg-brand-600 h-2.5 rounded-full transition-all duration-1000" style="width: 0%"></div></div>
                     </section>
 
                     <section class="bg-gray-900 rounded-3xl p-6 shadow-lg text-white">
                         <h2 class="font-bold text-lg mb-4">Security Settings</h2>
-                        <form id="formChangePassword" class="space-y-3">
-                            <input type="password" id="currentPassword" class="w-full p-3 rounded-xl bg-gray-800 border border-gray-700" placeholder="Current Password">
-                            <input type="password" id="newPassword" class="w-full p-3 rounded-xl bg-gray-800 border border-gray-700" placeholder="New Password">
-                            <button type="submit" class="w-full py-3 bg-white text-gray-900 rounded-xl font-bold text-sm">Update Password</button>
+                                                <form id="formChangePassword" class="space-y-3">
+                            <input type="password" id="currentPassword" required class="w-full p-3 rounded-xl bg-gray-800 border border-gray-700 focus:outline-none focus:border-brand-500 transition-colors" placeholder="Current Password">
+                            <input type="password" id="newPassword" required class="w-full p-3 rounded-xl bg-gray-800 border border-gray-700 focus:outline-none focus:border-brand-500 transition-colors" placeholder="New Password">
+                            <button type="submit" class="w-full py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-xl font-bold text-sm transition-colors focus:outline-none">Update Password</button>
                         </form>
                     </section>
                 </div>
@@ -112,8 +114,153 @@
         </div>
     </main>
 
-    <script type="module" src="js/authGuard.js"></script>
-    <script type="module" src="js/notifications.js"></script>
-    <script type="module" src="js/profile.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render UI Icons
+            lucide.createIcons();
+
+            // 1. Authentication Guard
+            const currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // 2. Profile Hydration Logic
+            const hydrateProfile = () => {
+                // Remove Loading Skeletons
+                document.querySelectorAll('.data-skeleton').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.data-content').forEach(el => el.classList.remove('hidden'));
+
+                // Set Text Fields
+                document.getElementById('fullNameDisplay').textContent = currentUser.name;
+                document.getElementById('usernameDisplay').textContent = '@' + currentUser.username;
+                document.getElementById('publicUserId').textContent = currentUser.id;
+                
+                // Set Form Fields
+                document.getElementById('fullName').value = currentUser.name || '';
+                document.getElementById('email').value = currentUser.email || '';
+                document.getElementById('phone').value = currentUser.phone || '';
+                document.getElementById('bio').value = currentUser.bio || '';
+
+                // Handle Trust Score & KYC UI state
+                const vBadge = document.getElementById('verificationBadge');
+                const vProgress = document.getElementById('verificationProgress');
+                const tScore = document.getElementById('trustScore');
+                const btnSubmitKYC = document.getElementById('btnSubmitKYC');
+                
+                if (currentUser.kyc === 'Verified') {
+                    vBadge.textContent = 'Verified';
+                    vBadge.className = 'bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full uppercase';
+                    vProgress.style.width = '100%';
+                    tScore.textContent = '85';
+                    btnSubmitKYC.disabled = true;
+                    btnSubmitKYC.textContent = 'Verification Approved';
+                    btnSubmitKYC.classList.replace('bg-brand-600', 'bg-green-600');
+                } else if (currentUser.kyc === 'Pending') {
+                    vBadge.textContent = 'Pending Review';
+                    vBadge.className = 'bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full uppercase';
+                    vProgress.style.width = '50%';
+                    tScore.textContent = '50';
+                    btnSubmitKYC.disabled = true;
+                    btnSubmitKYC.textContent = 'Review in Progress';
+                    btnSubmitKYC.classList.replace('bg-brand-600', 'bg-amber-600');
+                } else {
+                    vBadge.textContent = 'Unverified';
+                    vBadge.className = 'bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full uppercase';
+                    vProgress.style.width = '20%';
+                    tScore.textContent = '20';
+                }
+            };
+
+            hydrateProfile();
+
+            // 3. Update Profile Form Submission
+            document.getElementById('formUpdateProfile').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const btn = e.submitter;
+                btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 inline animate-spin mr-1"></i> Saving...`;
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    const newName = document.getElementById('fullName').value.trim();
+                    const newPhone = document.getElementById('phone').value.trim();
+                    const newBio = document.getElementById('bio').value.trim();
+                    
+                    const success = updateData(DB_KEYS.USERS, currentUser.id, {
+                        name: newName,
+                        phone: newPhone,
+                        bio: newBio
+                    });
+
+                    if(success) {
+                        currentUser.name = newName;
+                        currentUser.phone = newPhone;
+                        currentUser.bio = newBio;
+                        setCurrentUser(currentUser);
+                        hydrateProfile();
+                        alert("Profile updated successfully!");
+                    } else {
+                        alert("Failed to update profile. LocalStorage sync error.");
+                    }
+                    btn.innerHTML = 'Save Changes';
+                }, 500);
+            });
+
+            // 4. KYC Form Submission
+            document.getElementById('formSubmitKYC').addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (currentUser.kyc === 'Verified' || currentUser.kyc === 'Pending') return;
+
+                const btn = document.getElementById('btnSubmitKYC');
+                btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 inline animate-spin mr-1"></i> Submitting...`;
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    const success = updateData(DB_KEYS.USERS, currentUser.id, { kyc: 'Pending' });
+                    if(success) {
+                        currentUser.kyc = 'Pending';
+                        setCurrentUser(currentUser);
+                        hydrateProfile();
+                        alert("KYC documents submitted. Please allow 24 hours for administrative review.");
+                        e.target.reset();
+                    }
+                }, 800);
+            });
+
+            // 5. Change Password Logic
+            // Note: In an academic prototype, local text comparison is used. Never do this in production.
+            document.getElementById('formChangePassword').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const currentPass = document.getElementById('currentPassword').value;
+                const newPass = document.getElementById('newPassword').value;
+
+                if(currentPass !== currentUser.password) {
+                    alert("Authentication Error: Current password is incorrect.");
+                    return;
+                }
+
+                if(newPass.length < 8) {
+                    alert("Security Policy: New password must be at least 8 characters.");
+                    return;
+                }
+
+                const btn = e.submitter;
+                btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 inline animate-spin mr-1"></i> Updating...`;
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    const success = updateData(DB_KEYS.USERS, currentUser.id, { password: newPass });
+                    if(success) {
+                        currentUser.password = newPass;
+                        setCurrentUser(currentUser);
+                        alert("Password updated securely in local database.");
+                        e.target.reset();
+                    }
+                    btn.innerHTML = 'Update Password';
+                }, 600);
+            });
+        });
+    </script>
 </body>
 </html>
