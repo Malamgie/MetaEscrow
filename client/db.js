@@ -10,7 +10,8 @@ const DB_KEYS = {
     SETTINGS: 'metaescrow_settings',
     MARKETPLACE: 'metaescrow_marketplace',
     SUPPORT: 'metaescrow_support',
-    WALLET_REQUESTS: 'metaescrow_wallet_requests'
+    WALLET_REQUESTS: 'metaescrow_wallet_requests',
+    PENDING_INIT: 'metaescrow_pending_init' // Used for frictionless landing page onboarding
 };
 
 // ==========================================
@@ -124,30 +125,73 @@ function initializeDatabase() {
 
         saveData(DB_KEYS.USERS, [admin, buyer, seller]);
 
-        // 4. Sample Escrow Transaction
-        const transaction = {
+        // 4. Sample Escrow Transactions
+        // Transaction 1: Pending (Needs Acceptance)
+        const transaction1 = {
             id: generateId('TRX'),
             buyer: 'USR0001',
             seller: 'USR0002',
+            initiator: 'USR0001', // Buyer initiated
             title: 'MacBook Pro M2',
             description: 'Used MacBook Pro M2 256GB in pristine condition.',
             category: 'electronics',
             amount: 450000,
             fee: 4500,
-            status: 'Pending',
+            status: 'Pending', // Waiting for seller acceptance
             createdDate: new Date().toISOString(),
             updatedDate: new Date().toISOString(),
             paymentStatus: 'Unpaid',
-            releaseStatus: 'Locked'
+            releaseStatus: 'Locked',
+            messages: [] // Built-in chat ledger
         };
 
-        saveData(DB_KEYS.TRANSACTIONS, [transaction]);
+        // Transaction 2: Disputed (With Chat History for Admin view)
+        const transaction2 = {
+            id: generateId('TRX'),
+            buyer: 'USR0001',
+            seller: 'USR0002',
+            initiator: 'USR0002', // Seller initiated
+            title: 'Freelance Web Development',
+            description: 'E-commerce website development phase 1.',
+            category: 'services',
+            amount: 150000,
+            fee: 1500,
+            status: 'Disputed',
+            disputeDetails: {
+                raisedBy: 'buyer',
+                reason: 'Item not delivered',
+                date: new Date().toISOString()
+            },
+            createdDate: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+            updatedDate: new Date().toISOString(),
+            paymentStatus: 'Paid',
+            releaseStatus: 'Locked',
+            messages: [
+                { id: generateId('MSG'), senderId: 'USR0002', text: 'Hi Maya, I have delivered the source code to your email.', timestamp: new Date(Date.now() - 5000000).toISOString(), isAdmin: false },
+                { id: generateId('MSG'), senderId: 'USR0001', text: 'I received the files, but the payment gateway is completely broken. This is not what we agreed on.', timestamp: new Date(Date.now() - 4000000).toISOString(), isAdmin: false }
+            ]
+        };
 
-        // 5. Sample Wallets
+        saveData(DB_KEYS.TRANSACTIONS, [transaction1, transaction2]);
+
+        // 5. Sample Wallets (Adjusted to reflect the paid transaction above)
         saveData(DB_KEYS.WALLETS, [
             { userId: 'ADM0001', balance: 0, history: [] },
-            { userId: 'USR0001', balance: 150000, history: [{ id: generateId('TXN'), type: 'Credit', amount: 150000, description: 'Initial Funding', date: new Date().toISOString() }] },
-            { userId: 'USR0002', balance: 25000, history: [{ id: generateId('TXN'), type: 'Credit', amount: 25000, description: 'Initial Funding', date: new Date().toISOString() }] }
+            { 
+                userId: 'USR0001', 
+                balance: 150000, 
+                history: [
+                    { id: generateId('TXN'), type: 'Credit', amount: 300000, description: 'Initial Funding', date: new Date(Date.now() - 100000000).toISOString() },
+                    { id: generateId('TXN'), type: 'Debit', amount: 150000, description: `Escrow Payment (${transaction2.id})`, date: new Date(Date.now() - 86400000).toISOString() }
+                ] 
+            },
+            { 
+                userId: 'USR0002', 
+                balance: 25000, 
+                history: [
+                    { id: generateId('TXN'), type: 'Credit', amount: 25000, description: 'Initial Funding', date: new Date().toISOString() }
+                ] 
+            }
         ]);
 
         // 6. Sample Wallet Requests (Pending manual approval)
