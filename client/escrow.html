@@ -105,8 +105,8 @@
                 </a>
                 <div class="relative">
                     <button id="profileMenuToggle" class="flex items-center gap-2 focus:outline-none pl-2 border-l border-gray-200">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-100 to-brand-50 border border-brand-200 flex items-center justify-center overflow-hidden">
-                            <i data-lucide="user" class="w-4 h-4 text-brand-600"></i>
+                        <div class="w-8 h-8 rounded-full bg-gray-200 border border-gray-300 overflow-hidden">
+                            <img src="https://i.pravatar.cc/150?img=11" alt="Avatar" class="w-full h-full object-cover">
                         </div>
                         <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 hidden sm:block"></i>
                     </button>
@@ -137,6 +137,11 @@
                     <button id="createEscrowButton" class="w-full sm:w-auto px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold shadow-md hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
                         <i data-lucide="plus" class="w-5 h-5"></i> Create Custom Escrow
                     </button>
+                </div>
+
+                <div id="errorContainer" class="hidden bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl flex items-start gap-3">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5 text-red-500"></i>
+                    <div class="text-sm font-medium" id="errorMessage">Unable to load escrows. Please check your connection.</div>
                 </div>
 
                 <section id="escrowStatistics" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -171,6 +176,13 @@
                         <div class="data-skeleton bg-brand-400 rounded animate-pulse h-7 w-20"></div>
                     </div>
                 </section>
+
+                <div class="flex flex-wrap gap-2">
+                    <button class="px-4 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-full shadow-sm">All Escrows</button>
+                    <button class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm font-medium rounded-full transition-colors">Action Required</button>
+                    <button class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm font-medium rounded-full transition-colors">Pending Funding</button>
+                    <button class="px-4 py-1.5 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm font-medium rounded-full transition-colors">In Delivery</button>
+                </div>
 
                 <section class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
                     <div class="overflow-x-auto">
@@ -222,10 +234,19 @@
                         </a>
                     </div>
                 </section>
+
+                <div class="flex justify-between items-center text-sm text-gray-500 mt-4">
+                    <span>Showing recent transactions</span>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1.5 border border-gray-200 bg-white rounded-lg hover:bg-gray-50 disabled:opacity-50">Previous</button>
+                        <button class="px-3 py-1.5 border border-gray-200 bg-white rounded-lg hover:bg-gray-50 disabled:opacity-50">Next</button>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
 
+    <!-- Create Custom Escrow Modal -->
     <div id="createEscrowModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity ui-modal-close" aria-hidden="true"></div>
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
@@ -237,6 +258,16 @@
                     </button>
                 </div>
                 <form id="formCreateEscrow" class="px-6 py-6 space-y-5">
+                    
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">My Role in this transaction:</span>
+                        <div class="flex bg-white rounded-lg border border-gray-200 p-1 shadow-sm w-max">
+                            <button type="button" id="btnRoleBuyer" class="role-toggle active flex-1 px-4 py-1.5 bg-gray-900 text-white text-sm font-medium rounded-md transition-colors focus:outline-none">Buyer</button>
+                            <button type="button" id="btnRoleSeller" class="role-toggle flex-1 px-4 py-1.5 text-gray-600 hover:text-gray-800 text-sm font-medium rounded-md transition-colors focus:outline-none">Seller</button>
+                        </div>
+                        <input type="hidden" id="escInitiatorRole" value="Buyer">
+                    </div>
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Transaction Title</label>
                         <input type="text" id="escTitle" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" placeholder="e.g. Graphic Design Services">
@@ -247,8 +278,8 @@
                             <input type="number" id="escAmount" required min="1000" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" placeholder="50000">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Seller Username / ID</label>
-                            <input type="text" id="escSellerId" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" placeholder="@username">
+                            <label id="partnerLabel" class="block text-sm font-medium text-gray-700 mb-1">Seller Username / ID</label>
+                            <input type="text" id="escPartnerId" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all" placeholder="@username">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -270,10 +301,12 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Terms & Description</label>
                         <textarea id="escDesc" required rows="3" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all resize-none" placeholder="Detail the exact deliverables and terms for this escrow to prevent disputes..."></textarea>
                     </div>
+                    
                     <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-start gap-3">
                         <i data-lucide="info" class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5"></i>
-                        <p class="text-xs text-blue-800">By creating this escrow, the seller will be notified. Once they accept, you will be prompted to fund the escrow securely from your wallet.</p>
+                        <p class="text-xs text-blue-800" id="escHelperText">By creating this escrow, the seller will be notified. Once they accept the terms, you will be prompted to fund the escrow securely from your wallet.</p>
                     </div>
+                    
                     <div class="pt-2 flex gap-3">
                         <button type="button" class="flex-1 px-4 py-3 bg-white border border-gray-200 text-gray-700 rounded-xl font-medium shadow-sm hover:bg-gray-50 focus:outline-none ui-modal-close">Cancel</button>
                         <button type="submit" id="btnSubmitEscrow" class="flex-1 px-4 py-3 bg-gray-900 text-white rounded-xl font-bold shadow-md hover:bg-gray-800 transition-colors focus:outline-none">Generate Escrow</button>
@@ -283,91 +316,91 @@
         </div>
     </div>
 
+    <!-- Integrated Escrow Details & Chat Workspace Modal -->
     <div id="escrowModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-details" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity ui-modal-close" aria-hidden="true"></div>
         <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-4xl flex flex-col md:flex-row">
+            <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-5xl flex flex-col md:flex-row h-[85vh]">
                 
-                <button class="absolute top-4 right-4 z-10 p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 md:hidden ui-modal-close focus:outline-none">
+                <button class="absolute top-4 right-4 z-20 p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 md:hidden ui-modal-close focus:outline-none">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
 
-                <div class="w-full md:w-3/5 p-6 md:p-8 bg-white overflow-y-auto max-h-[85vh]">
-                    <div class="flex items-center gap-2 mb-6">
-                        <span class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-brand-50 text-brand-700 border border-brand-200" id="detailStatusBadge">Funded</span>
-                        <span class="text-sm font-medium text-gray-500" id="detailEscrowId">MES-2026-XXXX</span>
-                    </div>
-
-                    <h2 class="text-2xl font-bold text-gray-900 mb-2" id="detailTitle">Loading details...</h2>
-                    <p class="text-sm text-gray-600 mb-6" id="detailDesc">Please wait while we fetch the secure transaction data.</p>
-
-                    <div id="transactionSummary" class="bg-gray-50 border border-gray-100 rounded-xl p-5 mb-8">
-                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Financial Summary</h4>
-                        <div class="space-y-3">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Escrow Amount</span>
-                                <span class="font-medium text-gray-900" id="detailAmount">₦0.00</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-gray-600">Platform Fee</span>
-                                <span class="font-medium text-gray-900 text-red-500">- ₦0.00</span>
-                            </div>
-                            <div class="pt-3 mt-3 border-t border-gray-200 flex justify-between">
-                                <span class="font-bold text-gray-900">Net to Seller</span>
-                                <span class="font-bold text-brand-600 text-lg" id="detailNet">₦0.00</span>
-                            </div>
+                <!-- LEFT PANE: Info & Timeline -->
+                <div class="w-full md:w-2/5 border-r border-gray-100 flex flex-col h-full bg-gray-50 overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200 bg-white">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-brand-50 text-brand-700 border border-brand-200" id="detailStatusBadge">Funded</span>
+                            <span class="text-xs font-medium text-gray-500" id="detailEscrowId">MES-2026-XXXX</span>
                         </div>
+                        <h2 class="text-xl font-bold text-gray-900 mb-1 leading-tight" id="detailTitle">Loading details...</h2>
+                        <p class="text-xs text-gray-500" id="detailRoleInfo">You are the <strong class="text-gray-700">Buyer</strong></p>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4 mb-8">
-                        <div class="border border-gray-100 rounded-xl p-4">
-                            <p class="text-xs text-gray-400 font-medium mb-1">BUYER</p>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-gray-200"></div>
-                                <div>
-                                    <p class="text-sm font-bold text-gray-900" id="detailBuyer">@username</p>
+                    <div class="p-6 space-y-6">
+                        <!-- Financial Summary -->
+                        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Financials</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Escrow Amount</span>
+                                    <span class="font-medium text-gray-900" id="detailAmount">₦0.00</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Platform Fee</span>
+                                    <span class="font-medium text-gray-900 text-red-500">- ₦0.00</span>
+                                </div>
+                                <div class="pt-2 mt-2 border-t border-gray-100 flex justify-between">
+                                    <span class="font-bold text-gray-900">Net to Seller</span>
+                                    <span class="font-bold text-brand-600">₦0.00</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="border border-gray-100 rounded-xl p-4">
-                            <p class="text-xs text-gray-400 font-medium mb-1">SELLER</p>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-gray-200"></div>
-                                <div>
-                                    <p class="text-sm font-bold text-gray-900 flex items-center gap-1" id="detailSeller">
-                                        @sellername
-                                    </p>
-                                </div>
+
+                        <!-- Timeline -->
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-900 mb-4">Transaction Timeline</h4>
+                            <div id="escrowTimeline" class="relative border-l-2 border-gray-200 ml-3 space-y-5">
+                                <!-- Populated dynamically -->
                             </div>
                         </div>
-                    </div>
-
-                    <div id="dynamicActions" class="space-y-3">
-                        <!-- Dynamic Buttons injected here -->
                     </div>
                 </div>
 
-                <div class="w-full md:w-2/5 bg-gray-50 border-l border-gray-100 p-6 md:p-8 flex flex-col justify-between">
-                    
-                    <div>
-                        <h4 class="text-sm font-bold text-gray-900 mb-6 flex items-center justify-between">
-                            Transaction Timeline
-                            <button class="hidden md:block text-gray-400 hover:text-gray-600 ui-modal-close focus:outline-none"><i data-lucide="x" class="w-5 h-5"></i></button>
-                        </h4>
-                        
-                        <div id="escrowTimeline" class="relative border-l-2 border-gray-200 ml-3 space-y-6">
-                            <!-- Populated dynamically -->
-                        </div>
+                <!-- RIGHT PANE: Chat & Actions -->
+                <div class="w-full md:w-3/5 bg-white flex flex-col h-full relative">
+                    <button class="hidden md:block absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 focus:outline-none ui-modal-close transition-colors bg-gray-50 p-2 rounded-full hover:bg-gray-100">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Workspace Header -->
+                    <div class="p-4 sm:p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10">
+                        <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                            <i data-lucide="message-square" class="w-5 h-5 text-brand-600"></i> Transaction Workspace
+                        </h3>
                     </div>
 
-                    <div class="mt-8 bg-white border border-gray-200 rounded-xl p-4">
-                        <div class="flex items-center gap-2 mb-2">
-                            <i data-lucide="shield" class="w-4 h-4 text-brand-600"></i>
-                            <span class="text-xs font-bold text-gray-900 uppercase">Trust Center</span>
+                    <!-- Chat History Area -->
+                    <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-slate-50" id="chatContainer">
+                        <!-- Chat messages injected here -->
+                    </div>
+
+                    <!-- Action & Input Area -->
+                    <div class="p-4 sm:p-6 border-t border-gray-100 bg-white">
+                        
+                        <!-- Dynamic Contextual Actions -->
+                        <div id="dynamicActions" class="mb-4 pb-4 border-b border-gray-100 space-y-2">
+                            <!-- Action Buttons injected here based on role and status -->
                         </div>
-                        <p class="text-xs text-gray-500 leading-relaxed">
-                            Funds are locked securely in MetaEscrow's vault. Never release funds before inspecting the item. Do not communicate outside the platform to maintain protection.
-                        </p>
+
+                        <!-- Chat Input Form -->
+                        <form id="chatForm" class="flex gap-2">
+                            <input type="hidden" id="chatEscrowId">
+                            <input type="text" id="chatInput" required class="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all" placeholder="Type a message to your partner...">
+                            <button type="submit" class="px-4 py-2.5 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors focus:outline-none flex items-center justify-center shadow-sm">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
 
@@ -375,6 +408,7 @@
         </div>
     </div>
 
+    <!-- Raise Dispute Modal -->
     <div id="disputeModal" class="hidden fixed inset-0 z-[60] overflow-y-auto" aria-modal="true" role="dialog">
         <div class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm ui-dispute-close"></div>
         <div class="flex min-h-full items-center justify-center p-4 text-center">
@@ -383,7 +417,7 @@
                     <i data-lucide="alert-triangle" class="w-6 h-6"></i>
                     <h3 class="text-lg font-bold">Raise a Dispute</h3>
                 </div>
-                <p class="text-sm text-gray-600 mb-5">By opening a dispute, the escrow funds will be permanently frozen until a platform administrator reviews the evidence and issues a resolution.</p>
+                <p class="text-sm text-gray-600 mb-5">By opening a dispute, the escrow funds will be permanently frozen until an administrator reviews the workspace chat and issues a resolution.</p>
                 
                 <form id="formSubmitDispute" class="space-y-4">
                     <input type="hidden" id="disputeEscrowId">
@@ -394,17 +428,9 @@
                             <!-- Populated dynamically based on role -->
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Detailed Description</label>
-                        <textarea required rows="4" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-red-500 resize-none" placeholder="Provide clear details..."></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Evidence URL (Optional)</label>
-                        <input type="url" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-red-500" placeholder="Link to images/drive...">
-                    </div>
                     <div class="pt-4 flex gap-3">
-                        <button type="button" class="flex-1 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 ui-dispute-close">Cancel</button>
-                        <button type="submit" class="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700">Submit Dispute</button>
+                        <button type="button" class="flex-1 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-50 ui-dispute-close focus:outline-none">Cancel</button>
+                        <button type="submit" class="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 shadow-md focus:outline-none">Submit Dispute</button>
                     </div>
                 </form>
             </div>
@@ -580,11 +606,44 @@
 
             setTimeout(loadEscrows, 500);
 
-            // Setup Modals
+            // ==========================================
+            // MODAL SETUP & ROLE TOGGLING
+            // ==========================================
             const btnCreate = document.getElementById('createEscrowButton');
             const createModal = document.getElementById('createEscrowModal');
             const detailModal = document.getElementById('escrowModal');
             const disputeModal = document.getElementById('disputeModal');
+
+            // Role Toggle UI Logic in Create Modal
+            const btnRoleBuyer = document.getElementById('btnRoleBuyer');
+            const btnRoleSeller = document.getElementById('btnRoleSeller');
+            const escInitiatorRole = document.getElementById('escInitiatorRole');
+            const partnerLabel = document.getElementById('partnerLabel');
+            const escHelperText = document.getElementById('escHelperText');
+
+            const setCreateRole = (role) => {
+                escInitiatorRole.value = role;
+                if (role === 'Buyer') {
+                    btnRoleBuyer.classList.replace('text-gray-600', 'text-white');
+                    btnRoleBuyer.classList.replace('hover:text-gray-800', 'bg-gray-900');
+                    btnRoleSeller.classList.replace('text-white', 'text-gray-600');
+                    btnRoleSeller.classList.replace('bg-gray-900', 'hover:text-gray-800');
+                    
+                    partnerLabel.textContent = "Seller Username / ID";
+                    escHelperText.innerHTML = "By creating this escrow, the seller will be notified. Once they accept the terms, you will be prompted to fund the escrow securely from your wallet.";
+                } else {
+                    btnRoleSeller.classList.replace('text-gray-600', 'text-white');
+                    btnRoleSeller.classList.replace('hover:text-gray-800', 'bg-gray-900');
+                    btnRoleBuyer.classList.replace('text-white', 'text-gray-600');
+                    btnRoleBuyer.classList.replace('bg-gray-900', 'hover:text-gray-800');
+                    
+                    partnerLabel.textContent = "Buyer Username / ID";
+                    escHelperText.innerHTML = "By creating this escrow, the buyer will be notified. They must accept your terms and fund the escrow before you dispatch the goods/services.";
+                }
+            };
+
+            if(btnRoleBuyer) btnRoleBuyer.addEventListener('click', () => setCreateRole('Buyer'));
+            if(btnRoleSeller) btnRoleSeller.addEventListener('click', () => setCreateRole('Seller'));
 
             if (btnCreate && createModal) {
                 btnCreate.addEventListener('click', () => createModal.classList.remove('hidden'));
@@ -603,46 +662,107 @@
             document.getElementById('formCreateEscrow').addEventListener('submit', (e) => {
                 e.preventDefault();
                 
-                const sellerId = document.getElementById('escSellerId').value.trim();
+                const initiatorRole = document.getElementById('escInitiatorRole').value;
+                const partnerId = document.getElementById('escPartnerId').value.trim();
                 const amount = Number(document.getElementById('escAmount').value);
                 const users = loadData(DB_KEYS.USERS) || [];
                 
-                // Note: Strictly handling IDs or usernames for prototyping safety
-                const sellerFound = users.find(u => u.id === sellerId || u.username === sellerId.replace('@',''));
+                const partnerFound = users.find(u => u.id === partnerId || u.username === partnerId.replace('@',''));
                 
-                if (!sellerFound) {
-                    alert("Seller not found. Please verify the ID or Username.");
+                if (!partnerFound) {
+                    alert(`${initiatorRole === 'Buyer' ? 'Seller' : 'Buyer'} not found. Please verify the ID or Username.`);
                     return;
                 }
-                if (sellerFound.id === currentUser.id) {
+                if (partnerFound.id === currentUser.id) {
                     alert("You cannot create an escrow with yourself.");
                     return;
                 }
 
+                // Determine who is who based on role selection
+                const buyerId = initiatorRole === 'Buyer' ? currentUser.id : partnerFound.id;
+                const sellerId = initiatorRole === 'Seller' ? currentUser.id : partnerFound.id;
+
                 const newEscrow = {
                     id: generateId('MES'),
+                    initiator: currentUser.id,
                     title: document.getElementById('escTitle').value,
                     description: document.getElementById('escDesc').value,
                     category: document.getElementById('escCategory').value,
                     inspectionDays: document.getElementById('escInspection').value,
                     amount: amount,
-                    buyer: currentUser.id,
-                    seller: sellerFound.id,
-                    status: 'Pending',
+                    buyer: buyerId,
+                    seller: sellerId,
+                    status: 'Pending', // Awaiting acceptance
                     paymentStatus: 'Unpaid',
                     releaseStatus: 'Locked',
-                    createdDate: new Date().toISOString()
+                    messages: [], // Initialize chat ledger
+                    createdDate: new Date().toISOString(),
+                    updatedDate: new Date().toISOString()
                 };
 
                 const transactions = loadData(DB_KEYS.TRANSACTIONS) || [];
                 transactions.push(newEscrow);
                 saveData(DB_KEYS.TRANSACTIONS, transactions);
 
-                alert("Escrow created successfully! It is currently Pending Funding.");
+                alert("Escrow drafted successfully! Waiting for partner acceptance.");
                 createModal.classList.add('hidden');
                 e.target.reset();
+                setCreateRole('Buyer'); // reset toggle
                 loadEscrows(); // Reload table
             });
+
+
+            // ==========================================
+            // ESCROW WORKSPACE (CHAT & ACTIONS) LOGIC
+            // ==========================================
+            
+            // Helper to render chat messages
+            const renderChatMessages = (messagesArray) => {
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.innerHTML = '';
+                
+                if (!messagesArray || messagesArray.length === 0) {
+                    chatContainer.innerHTML = `<div class="text-center text-sm text-gray-500 py-10 italic">No messages yet. Start the conversation!</div>`;
+                    return;
+                }
+
+                messagesArray.forEach(msg => {
+                    const isMe = msg.senderId === currentUser.id;
+                    const msgTime = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    if (msg.isAdmin) {
+                        // System / Admin Injection styling
+                        chatContainer.innerHTML += `
+                            <div class="flex flex-col items-center my-4">
+                                <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-2 rounded-xl text-sm max-w-[85%] text-center shadow-sm">
+                                    <span class="font-bold block text-xs uppercase tracking-wider mb-1"><i data-lucide="shield-alert" class="w-3 h-3 inline"></i> System Admin</span>
+                                    ${msg.text}
+                                </div>
+                                <span class="text-[10px] text-gray-400 mt-1">${msgTime}</span>
+                            </div>
+                        `;
+                    } else {
+                        // Normal chat bubbles
+                        const alignClass = isMe ? 'items-end' : 'items-start';
+                        const bubbleClass = isMe ? 'bg-brand-600 text-white rounded-tl-xl rounded-tr-xl rounded-bl-xl' : 'bg-white border border-gray-200 text-gray-800 rounded-tl-xl rounded-tr-xl rounded-br-xl';
+                        const senderName = isMe ? 'You' : (msg.senderId === window.currentEscrowViewerSeller ? 'Seller' : 'Buyer');
+
+                        chatContainer.innerHTML += `
+                            <div class="flex flex-col ${alignClass} w-full mb-3">
+                                <span class="text-[10px] font-medium text-gray-500 mb-1 px-1">${senderName}</span>
+                                <div class="px-4 py-2.5 max-w-[85%] sm:max-w-[70%] text-sm shadow-sm ${bubbleClass}">
+                                    ${msg.text}
+                                </div>
+                                <span class="text-[10px] text-gray-400 mt-1 px-1">${msgTime}</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                // Auto scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                lucide.createIcons();
+            };
 
             // Global View Escrow Details Function
             window.viewEscrowDetails = function(id) {
@@ -650,17 +770,23 @@
                 const t = transactions.find(tx => tx.id === id);
                 if(!t) return;
 
+                // Store for chat ref
+                document.getElementById('chatEscrowId').value = id;
+                window.currentEscrowViewerSeller = t.seller; // hacky ref for chat UI
+
+                // Hydrate Details Pane
                 document.getElementById('detailEscrowId').textContent = t.id;
                 document.getElementById('detailTitle').textContent = t.title;
-                document.getElementById('detailDesc').textContent = t.description;
                 
                 const amt = Number(t.amount);
-                const fee = amt * 0.01; // 1% platform fee for prototype
+                const fee = amt * 0.01; 
                 document.getElementById('detailAmount').textContent = formatter.format(amt);
-                document.getElementById('detailNet').textContent = formatter.format(amt - fee);
+                // Detail net logic simplified for prototype
                 
-                document.getElementById('detailBuyer').textContent = t.buyer;
-                document.getElementById('detailSeller').innerHTML = `${t.seller}`;
+                const isBuyer = t.buyer === currentUser.id;
+                const isInitiator = t.initiator === currentUser.id;
+                
+                document.getElementById('detailRoleInfo').innerHTML = `You are the <strong class="text-gray-700">${isBuyer ? 'Buyer' : 'Seller'}</strong>`;
                 
                 // Status Badge styling
                 const badge = document.getElementById('detailStatusBadge');
@@ -670,14 +796,14 @@
                 else if(t.status === 'Completed') badge.className = 'px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-green-50 text-green-700 border border-green-200';
                 else if(t.status === 'Disputed') badge.className = 'px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-200';
                 
-                // Timeline building
+                // Timeline
                 const timeline = document.getElementById('escrowTimeline');
                 const createdStr = new Date(t.createdDate).toLocaleDateString() + ' • ' + new Date(t.createdDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 
                 let timelineHTML = `
                     <div class="relative pl-6">
                         <div class="absolute -left-1.5 top-1 w-3 h-3 bg-brand-500 rounded-full ring-4 ring-gray-50"></div>
-                        <p class="text-xs font-bold text-gray-900">Escrow Created</p>
+                        <p class="text-xs font-bold text-gray-900">Escrow Drafted</p>
                         <p class="text-[10px] text-gray-400">${createdStr}</p>
                     </div>
                 `;
@@ -704,46 +830,87 @@
 
                 timeline.innerHTML = timelineHTML;
 
-                // Dynamic Actions Generation
+                // Load Chat
+                renderChatMessages(t.messages);
+
+                // Dynamic Actions Generation based on state & role
                 const actionsContainer = document.getElementById('dynamicActions');
                 actionsContainer.innerHTML = '';
 
-                const isBuyer = t.buyer === currentUser.id;
-
-                if (t.status === 'Pending' && isBuyer) {
-                    actionsContainer.innerHTML = `
-                        <button onclick="window.fundEscrow('${t.id}')" class="w-full py-3 bg-brand-600 text-white rounded-xl font-bold shadow-md hover:bg-brand-700 transition-colors flex justify-center items-center gap-2 focus:outline-none">
-                            <i data-lucide="lock" class="w-5 h-5"></i> Fund Escrow (${formatter.format(t.amount)})
-                        </button>
-                    `;
+                if (t.status === 'Pending') {
+                    if (!isInitiator) {
+                        // Partner needs to accept
+                        actionsContainer.innerHTML = `
+                            <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl mb-3">
+                                <p class="text-sm text-amber-800 font-medium text-center">Please review the transaction details. Do you accept these terms?</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="window.acceptEscrowTerms('${t.id}')" class="flex-1 py-2.5 bg-brand-600 text-white rounded-xl font-bold shadow-md hover:bg-brand-700 transition-colors focus:outline-none text-sm">Accept Terms</button>
+                                <button onclick="alert('Transaction Cancelled')" class="flex-1 py-2.5 bg-white border border-gray-200 text-red-600 rounded-xl font-bold hover:bg-red-50 transition-colors focus:outline-none text-sm">Reject</button>
+                            </div>
+                        `;
+                    } else {
+                        // Initiator is waiting
+                        actionsContainer.innerHTML = `<p class="text-sm text-center text-amber-600 font-medium py-2 bg-amber-50 rounded-xl border border-amber-100">Awaiting partner acceptance...</p>`;
+                    }
                 } 
-                else if (t.status === 'Active' && isBuyer) {
-                    actionsContainer.innerHTML = `
-                        <button onclick="window.releaseFunds('${t.id}')" class="w-full py-3 bg-brand-600 text-white rounded-xl font-bold shadow-md hover:bg-brand-700 transition-colors flex justify-center items-center gap-2 focus:outline-none">
-                            <i data-lucide="check-circle" class="w-5 h-5"></i> Confirm Delivery & Release Funds
-                        </button>
-                        <button onclick="window.openDispute('${t.id}', 'buyer')" class="w-full py-3 bg-white border border-gray-200 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors focus:outline-none">
-                            Raise Dispute
-                        </button>
-                    `;
-                } 
-                else if (t.status === 'Pending' && !isBuyer) {
-                    actionsContainer.innerHTML = `<p class="text-sm text-center text-amber-600 font-medium">Waiting for buyer to fund escrow...</p>`;
+                else if (t.status === 'Awaiting Funding') {
+                    if (isBuyer) {
+                        actionsContainer.innerHTML = `
+                            <button onclick="window.fundEscrow('${t.id}')" class="w-full py-3 bg-brand-600 text-white rounded-xl font-bold shadow-md hover:bg-brand-700 transition-colors flex justify-center items-center gap-2 focus:outline-none">
+                                <i data-lucide="lock" class="w-5 h-5"></i> Secure Funds (₦${Number(t.amount).toLocaleString()})
+                            </button>
+                        `;
+                    } else {
+                        actionsContainer.innerHTML = `<p class="text-sm text-center text-blue-600 font-medium py-2 bg-blue-50 rounded-xl border border-blue-100">Terms accepted. Waiting for Buyer to secure funds.</p>`;
+                    }
                 }
-                else if (t.status === 'Active' && !isBuyer) {
-                    actionsContainer.innerHTML = `
-                        <p class="text-sm text-center text-blue-600 font-medium mb-3">Funds are secured. Please deliver the item/service.</p>
-                        <button onclick="window.openDispute('${t.id}', 'seller')" class="w-full py-3 bg-white border border-gray-200 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors focus:outline-none">
-                            Raise Dispute
-                        </button>
-                    `;
+                else if (t.status === 'Active') {
+                    if (isBuyer) {
+                        actionsContainer.innerHTML = `
+                            <button onclick="window.releaseFunds('${t.id}')" class="w-full py-3 bg-brand-600 text-white rounded-xl font-bold shadow-md hover:bg-brand-700 transition-colors flex justify-center items-center gap-2 focus:outline-none mb-2">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i> Approve Delivery & Release Funds
+                            </button>
+                            <button onclick="window.openDispute('${t.id}', 'buyer')" class="w-full py-2.5 bg-white border border-gray-200 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors focus:outline-none text-sm">
+                                Raise Dispute
+                            </button>
+                        `;
+                    } else {
+                        actionsContainer.innerHTML = `
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl mb-3 text-center">
+                                <p class="text-sm text-blue-800 font-bold"><i data-lucide="shield-check" class="w-4 h-4 inline"></i> Funds Secured</p>
+                                <p class="text-xs text-blue-600 mt-1">Please fulfill the order. Funds will be released upon buyer approval.</p>
+                            </div>
+                            <button onclick="window.openDispute('${t.id}', 'seller')" class="w-full py-2.5 bg-white border border-gray-200 text-red-600 rounded-xl font-medium hover:bg-red-50 transition-colors focus:outline-none text-sm">
+                                Raise Dispute
+                            </button>
+                        `;
+                    }
+                }
+                else if (t.status === 'Disputed') {
+                    actionsContainer.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-sm font-medium text-center shadow-inner"><i data-lucide="alert-triangle" class="w-5 h-5 mx-auto mb-2"></i> This transaction is currently under administrative review. Please communicate via the workspace.</div>`;
                 }
 
                 lucide.createIcons();
                 detailModal.classList.remove('hidden');
             };
 
-            // Escrow Action Handlers
+            // Accept Terms Logic
+            window.acceptEscrowTerms = function(id) {
+                const transactions = loadData(DB_KEYS.TRANSACTIONS) || [];
+                const tIdx = transactions.findIndex(tx => tx.id === id);
+                if(tIdx === -1) return;
+
+                // Move status to Awaiting Funding
+                transactions[tIdx].status = 'Awaiting Funding';
+                saveData(DB_KEYS.TRANSACTIONS, transactions);
+
+                alert("Terms accepted successfully.");
+                viewEscrowDetails(id); // Reload modal state
+                loadEscrows(); // Reload bg table
+            };
+
+            // Fund Escrow Logic
             window.fundEscrow = function(id) {
                 const transactions = loadData(DB_KEYS.TRANSACTIONS) || [];
                 const wallets = loadData(DB_KEYS.WALLETS) || [];
@@ -778,10 +945,11 @@
                 saveData(DB_KEYS.TRANSACTIONS, transactions);
 
                 alert("Escrow funded successfully! Funds are now securely locked.");
-                detailModal.classList.add('hidden');
+                viewEscrowDetails(id);
                 loadEscrows();
             };
 
+            // Release Funds Logic
             window.releaseFunds = function(id) {
                 if(!confirm("Are you sure you want to release funds to the seller? This action cannot be undone.")) return;
 
@@ -821,6 +989,7 @@
                 loadEscrows();
             };
 
+            // Dispute Prep Logic
             window.openDispute = function(id, role) {
                 document.getElementById('disputeEscrowId').value = id;
                 document.getElementById('disputeRole').value = role;
@@ -846,7 +1015,7 @@
                 disputeModal.classList.remove('hidden');
             };
 
-            // Submit Dispute Logic
+            // Submit Dispute Form
             document.getElementById('formSubmitDispute').addEventListener('submit', (e) => {
                 e.preventDefault();
                 const id = document.getElementById('disputeEscrowId').value;
@@ -869,6 +1038,38 @@
                     disputeModal.classList.add('hidden');
                     e.target.reset();
                     loadEscrows();
+                }
+            });
+
+            // Chat Submission Logic
+            document.getElementById('chatForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = document.getElementById('chatInput');
+                const text = input.value.trim();
+                const escId = document.getElementById('chatEscrowId').value;
+
+                if(!text || !escId) return;
+
+                const transactions = loadData(DB_KEYS.TRANSACTIONS) || [];
+                const tIdx = transactions.findIndex(tx => tx.id === escId);
+                
+                if(tIdx !== -1) {
+                    const newMsg = {
+                        id: generateId('MSG'),
+                        senderId: currentUser.id,
+                        text: text,
+                        timestamp: new Date().toISOString(),
+                        isAdmin: false
+                    };
+
+                    if(!transactions[tIdx].messages) transactions[tIdx].messages = [];
+                    transactions[tIdx].messages.push(newMsg);
+                    
+                    saveData(DB_KEYS.TRANSACTIONS, transactions);
+                    
+                    // Re-render chat UI instantly
+                    renderChatMessages(transactions[tIdx].messages);
+                    input.value = '';
                 }
             });
             
