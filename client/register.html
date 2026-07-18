@@ -412,6 +412,7 @@
                         createdAt: new Date().toISOString()
                     };
 
+                  
                     // Save user to DB
                     users.push(newUser);
                     saveData(DB_KEYS.USERS, users);
@@ -439,6 +440,34 @@
 
                     // Auto-login newly registered user
                     setCurrentUser(newUser);
+
+                    // ==============================================================
+                    // NEW: Intercept Landing Page Quick-Start Flow
+                    // ==============================================================
+                    const pendingInit = loadData('metaescrow_pending_init');
+                    if (pendingInit) {
+                        const transactions = loadData(DB_KEYS.TRANSACTIONS) || [];
+                        const newEscrow = {
+                            id: generateId('MES'),
+                            buyer: pendingInit.role === 'Buyer' ? newUser.id : 'Pending Partner',
+                            seller: pendingInit.role === 'Seller' ? newUser.id : 'Pending Partner',
+                            initiator: newUser.id,
+                            title: 'Quick Start Escrow',
+                            description: 'Drafted from landing page. Please update with your partner\'s username.',
+                            category: 'other',
+                            amount: pendingInit.amount,
+                            fee: pendingInit.amount * 0.01,
+                            status: 'Draft', // Set to draft so they can edit it later
+                            createdDate: new Date().toISOString(),
+                            updatedDate: new Date().toISOString(),
+                            paymentStatus: 'Unpaid',
+                            releaseStatus: 'Locked',
+                            messages: []
+                        };
+                        transactions.push(newEscrow);
+                        saveData(DB_KEYS.TRANSACTIONS, transactions);
+                        localStorage.removeItem('metaescrow_pending_init'); // Clear the temporary data
+                    }
 
                     // Show success animation
                     successToast.classList.remove('hidden');
