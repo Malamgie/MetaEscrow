@@ -109,7 +109,7 @@
 
             <p class="px-3 text-xs font-bold uppercase tracking-wider text-gray-600 mt-6 mb-2">System</p>
             <button data-target="auditLogTable" class="sidebar-link w-full flex items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
-                <i data-lucide="clipboard-list" class="w-5 h-5 mr-3"></i> Audit Logs
+                <i data-lucide="clipboard-list" class="w-5 h-5 mr-3"></i> Support Tickets
             </button>
             <button data-target="notificationCenter" class="sidebar-link w-full flex items-center px-3 py-2.5 hover:text-white hover:bg-gray-900 rounded-xl font-medium transition-colors group">
                 <i data-lucide="bell-ring" class="w-5 h-5 mr-3"></i> Broadcasts
@@ -128,7 +128,7 @@
                     <p class="text-[10px] font-medium text-brand-500 uppercase tracking-widest">Super Administrator</p>
                 </div>
             </div>
-            <button id="logoutButton" data-action="logout" class="w-full flex items-center justify-center px-3 py-2 bg-gray-900 text-gray-400 hover:text-white hover:bg-red-900/50 hover:border-red-800 border border-transparent rounded-lg transition-colors text-sm font-medium">
+            <button id="logoutButton" data-action="logout" class="w-full flex items-center justify-center px-3 py-2 bg-gray-900 text-gray-400 hover:text-white hover:bg-red-900/50 hover:border-red-800 border border-transparent rounded-lg transition-colors text-sm font-medium focus:outline-none">
                 <i data-lucide="log-out" class="w-4 h-4 mr-2"></i> End Session
             </button>
         </div>
@@ -260,12 +260,36 @@
                         </div>
                     </div>
 
-                    <!-- Split Layout: Recent Activity & Analytics (Dummy Placeholders for visual) -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Split Layout: Recent Activity & Quick Approvals -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Quick Approvals Queue -->
+                        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+                            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                                <h3 class="font-bold text-gray-900 flex items-center gap-2"><i data-lucide="inbox" class="w-4 h-4 text-brand-600"></i> Financial Priority Queue</h3>
+                            </div>
+                            <div class="p-0 overflow-x-auto" id="financialQueueContainer">
+                                <table class="w-full text-left whitespace-nowrap">
+                                    <tbody class="data-skeleton divide-y divide-gray-50">
+                                        <tr><td class="px-6 py-4"><div class="h-10 bg-gray-100 rounded-lg animate-pulse w-full"></div></td></tr>
+                                        <tr><td class="px-6 py-4"><div class="h-10 bg-gray-100 rounded-lg animate-pulse w-full"></div></td></tr>
+                                        <tr><td class="px-6 py-4"><div class="h-10 bg-gray-100 rounded-lg animate-pulse w-full"></div></td></tr>
+                                    </tbody>
+                                    <tbody id="financialQueueBody" class="data-content hidden divide-y divide-gray-50">
+                                        <!-- Dynamically populated by localStorage -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- System Activity Timeline -->
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col h-[400px]">
-                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4 text-brand-600"></i> System Activity Timeline</h3>
-                            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4">
-                                <div id="activityContent" class="space-y-4 text-sm text-gray-600">
+                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4 text-brand-600"></i> Recent Activity</h3>
+                            <div class="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4" id="recentActivity">
+                                <div class="data-skeleton flex gap-3 animate-pulse">
+                                    <div class="w-2 h-2 rounded-full bg-gray-300 mt-1.5 shrink-0"></div>
+                                    <div class="w-full"><div class="h-3 bg-gray-200 rounded w-full mb-1"></div><div class="h-2 bg-gray-100 rounded w-1/2"></div></div>
+                                </div>
+                                <div id="activityContent" class="data-content hidden space-y-4 text-sm text-gray-600">
                                     <div class="flex gap-3">
                                         <div class="w-2 h-2 rounded-full bg-brand-500 mt-1.5 shrink-0"></div>
                                         <div><p class="font-semibold text-gray-900">Database Synchronized</p><p class="text-xs text-gray-400">Just now</p></div>
@@ -329,7 +353,7 @@
                             <tbody class="data-skeleton divide-y divide-gray-50">
                                 <tr><td colspan="5" class="px-6 py-12 text-center text-gray-400">Loading queue...</td></tr>
                             </tbody>
-                            <tbody id="financialQueueBody" class="data-content hidden divide-y divide-gray-50">
+                            <tbody id="fullFinancialQueue" class="data-content hidden divide-y divide-gray-50">
                                 <!-- Populated dynamically -->
                             </tbody>
                         </table>
@@ -382,8 +406,8 @@
                                     <th class="px-6 py-4">Escrow ID</th>
                                     <th class="px-6 py-4">Parties</th>
                                     <th class="px-6 py-4">Amount Locked</th>
-                                    <th class="px-6 py-4">Status</th>
-                                    <th class="px-6 py-4 text-right">Mediation Action</th>
+                                    <th class="px-6 py-4">Dispute Details</th>
+                                    <th class="px-6 py-4 text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="data-skeleton divide-y divide-gray-50">
@@ -522,7 +546,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
                             <textarea id="bcMessage" required rows="4" class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none" placeholder="Enter notification message..."></textarea>
                         </div>
-                        <button type="submit" class="px-6 py-2.5 bg-brand-600 text-white rounded-xl font-bold shadow hover:bg-brand-700 transition-colors">Send Broadcast</button>
+                        <button type="submit" class="px-6 py-2.5 bg-brand-600 text-white rounded-xl font-bold shadow hover:bg-brand-700 transition-colors focus:outline-none">Send Broadcast</button>
                     </form>
                 </section>
 
@@ -537,7 +561,7 @@
                             <div class="flex items-center gap-3">
                                 <input type="number" id="settingFee" value="1.0" step="0.1" class="w-24 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none">
                                 <span class="text-gray-600">%</span>
-                                <button onclick="alert('Settings saved (Prototype)')" class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-bold ml-auto">Save</button>
+                                <button onclick="alert('Settings saved (Prototype)')" class="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-bold ml-auto focus:outline-none">Save</button>
                             </div>
                         </div>
                         <div class="p-4 bg-gray-50 rounded-xl border border-gray-200">
@@ -555,7 +579,87 @@
         </main>
     </div>
 
-    <!-- UI/UX Interactivity Scripts (Non-Business Logic strictly for styling/toggles) -->
+    <!-- Admin Dispute Workspace Modal -->
+    <div id="adminDisputeModal" class="hidden fixed inset-0 z-[60] overflow-y-auto" aria-labelledby="modal-details" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity ui-modal-close" aria-hidden="true"></div>
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-5xl flex flex-col lg:flex-row h-[85vh]">
+                
+                <button class="absolute top-4 right-4 z-20 p-2 bg-gray-100 rounded-full text-gray-500 hover:bg-gray-200 lg:hidden ui-modal-close focus:outline-none">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+
+                <!-- LEFT PANE: Dispute Details & Resolution -->
+                <div class="w-full lg:w-2/5 border-r border-gray-100 flex flex-col h-full bg-gray-50 overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200 bg-white">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-200">Disputed</span>
+                            <span class="text-xs font-medium text-gray-500" id="adminDisputeId">MES-...</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-900 mb-1 leading-tight" id="adminDisputeTitle">Loading...</h2>
+                    </div>
+
+                    <div class="p-6 space-y-6">
+                        <div class="bg-red-50 border border-red-100 rounded-xl p-4 shadow-sm">
+                            <h4 class="text-xs font-bold text-red-800 uppercase tracking-wider mb-2 flex items-center gap-1"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Dispute Reason</h4>
+                            <p class="text-sm font-semibold text-red-900 mb-1" id="adminDisputeReason">...</p>
+                            <p class="text-xs text-red-700" id="adminDisputeRaisedBy">Raised by: ...</p>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Locked Funds</h4>
+                            <p class="text-2xl font-black text-gray-900" id="adminDisputeAmount">₦0.00</p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-3 pt-4 border-t border-gray-200">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Resolution</h4>
+                            <button id="btnResolveRefund" class="w-full py-3 bg-white border border-gray-200 text-blue-600 rounded-xl font-bold shadow-sm hover:bg-blue-50 transition-colors flex justify-center items-center gap-2 focus:outline-none">
+                                <i data-lucide="corner-down-left" class="w-5 h-5"></i> Refund Buyer
+                            </button>
+                            <button id="btnResolvePay" class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold shadow-md hover:bg-gray-800 transition-colors flex justify-center items-center gap-2 focus:outline-none">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i> Pay Seller
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT PANE: Admin Chat Injection -->
+                <div class="w-full lg:w-3/5 bg-white flex flex-col h-full relative">
+                    <button class="hidden lg:block absolute top-4 right-4 z-10 text-gray-400 hover:text-gray-600 focus:outline-none ui-modal-close transition-colors bg-gray-50 p-2 rounded-full hover:bg-gray-100">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+
+                    <!-- Workspace Header -->
+                    <div class="p-4 sm:p-6 border-b border-gray-100 flex items-center justify-between bg-white z-10">
+                        <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                            <i data-lucide="message-square" class="w-5 h-5 text-red-600"></i> Evidence & Chat Ledger
+                        </h3>
+                    </div>
+
+                    <!-- Chat History Area -->
+                    <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 bg-slate-50" id="adminChatContainer">
+                        <!-- Chat messages injected here -->
+                    </div>
+
+                    <!-- Admin Intervention Input -->
+                    <div class="p-4 sm:p-6 border-t border-gray-100 bg-red-50">
+                        <p class="text-xs font-bold text-red-800 uppercase tracking-wider mb-2">Admin Intervention Message</p>
+                        <form id="adminChatForm" class="flex gap-2">
+                            <input type="hidden" id="adminChatEscrowId">
+                            <input type="text" id="adminChatInput" required class="flex-1 px-4 py-2.5 bg-white border border-red-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 transition-all placeholder-red-300 text-red-900 font-medium" placeholder="Send a message to both parties...">
+                            <button type="submit" class="px-4 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors focus:outline-none flex items-center justify-center shadow-sm font-bold">
+                                Inject
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- UI/UX Interactivity Scripts -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
@@ -584,7 +688,6 @@
 
             links.forEach(link => {
                 link.addEventListener('click', (e) => {
-                    // Update Active Styles
                     links.forEach(l => {
                         l.classList.remove('bg-brand-600/10', 'text-brand-400');
                         l.classList.add('text-gray-400');
@@ -593,31 +696,34 @@
                     targetBtn.classList.remove('text-gray-400', 'hover:text-white', 'hover:bg-gray-900');
                     targetBtn.classList.add('bg-brand-600/10', 'text-brand-400');
 
-                    // Update Header
                     if(pageHeaderTitle) pageHeaderTitle.textContent = targetBtn.textContent.trim();
 
-                    // Toggle Sections
                     const targetId = targetBtn.getAttribute('data-target');
                     sections.forEach(sec => {
                         if (sec.id === targetId || (targetId === 'adminDashboard' && sec.id === 'platformHealth')) {
                             sec.classList.remove('hidden');
                             sec.classList.add('block');
-                        } else if (sec.id !== 'platformHealth') { // Keep platform health visible usually
+                        } else if (sec.id !== 'platformHealth') { 
                             sec.classList.remove('block');
                             sec.classList.add('hidden');
                         }
                     });
 
-                    // Close mobile sidebar on selection
                     if(window.innerWidth < 1024 && sidebar) {
                         sidebar.classList.add('-translate-x-full');
                     }
                 });
             });
+
+            // Generic Modal Close
+            document.querySelectorAll('.ui-modal-close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('adminDisputeModal')?.classList.add('hidden');
+                });
+            });
         });
     </script>
 
-    <!-- Strict CSS Custom Scrollbar for Sidebar -->
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
@@ -645,8 +751,6 @@
             setTimeout(() => {
                 const overlay = document.getElementById('loadingOverlay');
                 if (overlay) overlay.classList.add('hidden');
-                
-                // Hydrate Dashboard Data
                 loadDashboardData();
             }, 800);
 
@@ -729,7 +833,7 @@
                             
                             let detailsHTML = '';
                             if(isDeposit) {
-                                detailsHTML = `<a href="${r.proof}" target="_blank" class="text-blue-600 hover:underline">View Receipt</a>`;
+                                detailsHTML = `<a href="${r.proof}" target="_blank" class="text-blue-600 hover:underline font-medium">View Receipt</a>`;
                             } else {
                                 detailsHTML = `
                                     <div class="text-xs">
@@ -754,8 +858,8 @@
                                     </td>
                                     <td class="px-6 py-3">${detailsHTML}</td>
                                     <td class="px-6 py-3 text-right">
-                                        <button class="px-3 py-1.5 bg-brand-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-brand-700 mr-2" onclick="approveFinancial('${r.id}')">Approve</button>
-                                        <button class="px-3 py-1.5 bg-white border border-gray-200 text-red-600 text-xs font-bold rounded-lg shadow-sm hover:bg-red-50" onclick="rejectFinancial('${r.id}')">Reject</button>
+                                        <button class="px-3 py-1.5 bg-brand-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-brand-700 mr-2 focus:outline-none" onclick="approveFinancial('${r.id}')">Approve</button>
+                                        <button class="px-3 py-1.5 bg-white border border-gray-200 text-red-600 text-xs font-bold rounded-lg shadow-sm hover:bg-red-50 focus:outline-none" onclick="rejectFinancial('${r.id}')">Reject</button>
                                     </td>
                                 </tr>
                             `;
@@ -780,8 +884,8 @@
                                     </td>
                                     <td class="px-6 py-3"><span class="px-2 py-1 text-[10px] font-bold uppercase rounded-full bg-amber-100 text-amber-700">Pending</span></td>
                                     <td class="px-6 py-3 text-right">
-                                        <button class="px-3 py-1 bg-brand-600 text-white text-xs font-bold rounded mr-2" onclick="approveKyc('${u.id}')">Approve</button>
-                                        <button class="px-3 py-1 bg-white border border-gray-200 text-red-600 text-xs font-bold rounded" onclick="rejectKyc('${u.id}')">Reject</button>
+                                        <button class="px-3 py-1 bg-brand-600 text-white text-xs font-bold rounded mr-2 focus:outline-none" onclick="approveKyc('${u.id}')">Approve</button>
+                                        <button class="px-3 py-1 bg-white border border-gray-200 text-red-600 text-xs font-bold rounded focus:outline-none" onclick="rejectKyc('${u.id}')">Reject</button>
                                     </td>
                                 </tr>
                             `;
@@ -797,6 +901,8 @@
                         disputesQueueBody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">No active disputes requiring mediation.</td></tr>';
                     } else {
                         activeDisputesList.forEach(t => {
+                            const reasonStr = t.disputeDetails ? t.disputeDetails.reason : 'No reason provided';
+                            const raisedByStr = t.disputeDetails ? t.disputeDetails.raisedBy : 'Unknown';
                             disputesQueueBody.innerHTML += `
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-3 text-sm font-medium text-gray-900">${t.id}</td>
@@ -805,10 +911,13 @@
                                         <span class="font-bold text-purple-600">S:</span> ${t.seller}
                                     </td>
                                     <td class="px-6 py-3 text-sm font-bold text-gray-900">${formatter.format(t.amount)}</td>
-                                    <td class="px-6 py-3"><span class="px-2 py-1 text-[10px] font-bold uppercase rounded-full bg-red-100 text-red-700">Disputed</span></td>
+                                    <td class="px-6 py-3">
+                                        <div class="text-xs max-w-[200px] truncate">
+                                            <span class="font-bold text-red-600 capitalize">${raisedByStr}:</span> ${reasonStr}
+                                        </div>
+                                    </td>
                                     <td class="px-6 py-3 text-right">
-                                        <button class="px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded mr-2" onclick="resolveDispute('${t.id}', 'Buyer')">Refund Buyer</button>
-                                        <button class="px-2 py-1 bg-purple-600 text-white text-xs font-bold rounded" onclick="resolveDispute('${t.id}', 'Seller')">Pay Seller</button>
+                                        <button class="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-gray-800 focus:outline-none" onclick="openAdminDisputeInvestigator('${t.id}')">Investigate</button>
                                     </td>
                                 </tr>
                             `;
@@ -823,8 +932,8 @@
                     users.forEach(user => {
                         const statusClass = user.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700';
                         const actionBtn = user.status === 'Active' 
-                            ? `<button onclick="toggleUserStatus('${user.id}')" class="text-xs font-semibold text-red-600 hover:text-red-800 transition-colors">Suspend</button>`
-                            : `<button onclick="toggleUserStatus('${user.id}')" class="text-xs font-semibold text-green-600 hover:text-green-800 transition-colors">Activate</button>`;
+                            ? `<button onclick="toggleUserStatus('${user.id}')" class="text-xs font-semibold text-red-600 hover:text-red-800 transition-colors focus:outline-none">Suspend</button>`
+                            : `<button onclick="toggleUserStatus('${user.id}')" class="text-xs font-semibold text-green-600 hover:text-green-800 transition-colors focus:outline-none">Activate</button>`;
 
                         userTableBody.innerHTML += `
                             <tr class="hover:bg-gray-50">
@@ -854,19 +963,19 @@
                         escrowRegistryBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">No transactions yet.</td></tr>`;
                     } else {
                         transactions.forEach(t => {
-                            let statusClass = 'bg-gray-100 text-gray-700';
-                            if(t.status === 'Pending') statusClass = 'bg-amber-100 text-amber-700';
-                            if(t.status === 'Active') statusClass = 'bg-blue-100 text-blue-700';
-                            if(t.status === 'Completed') statusClass = 'bg-green-100 text-green-700';
-                            if(t.status === 'Disputed') statusClass = 'bg-red-100 text-red-700';
+                            let statusClass = 'bg-gray-100 text-gray-700 border-gray-200';
+                            if(t.status === 'Pending' || t.status === 'Awaiting Funding') statusClass = 'bg-amber-50 text-amber-700 border-amber-200';
+                            if(t.status === 'Active') statusClass = 'bg-blue-50 text-blue-700 border-blue-200';
+                            if(t.status === 'Completed') statusClass = 'bg-green-50 text-green-700 border-green-200';
+                            if(t.status === 'Disputed') statusClass = 'bg-red-50 text-red-700 border-red-200';
 
                             escrowRegistryBody.innerHTML += `
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-3 text-sm font-medium text-gray-900">${t.id}</td>
                                     <td class="px-6 py-3 text-sm text-gray-800">${t.title}</td>
-                                    <td class="px-6 py-3 text-xs text-gray-500">B: ${t.buyer}<br>S: ${t.seller}</td>
+                                    <td class="px-6 py-3 text-xs text-gray-500"><span class="font-bold text-blue-600">B:</span> ${t.buyer}<br><span class="font-bold text-purple-600">S:</span> ${t.seller}</td>
                                     <td class="px-6 py-3 text-sm font-bold text-gray-900">${formatter.format(t.amount)}</td>
-                                    <td class="px-6 py-3"><span class="px-2 py-1 text-[10px] font-bold uppercase rounded-full ${statusClass}">${t.status}</span></td>
+                                    <td class="px-6 py-3"><span class="px-2 py-1 text-[10px] font-bold uppercase rounded-full border ${statusClass}">${t.status}</span></td>
                                 </tr>
                             `;
                         });
@@ -888,7 +997,7 @@
                                     <td class="px-6 py-3 text-sm text-gray-500">${m.sellerId}</td>
                                     <td class="px-6 py-3 text-sm font-bold text-gray-900">${formatter.format(m.price)}</td>
                                     <td class="px-6 py-3 text-right">
-                                        <button onclick="deleteMarketplaceItem('${m.id}')" class="text-xs font-semibold text-red-600 hover:text-red-800 transition-colors">Remove</button>
+                                        <button onclick="deleteMarketplaceItem('${m.id}')" class="text-xs font-semibold text-red-600 hover:text-red-800 transition-colors focus:outline-none">Remove</button>
                                     </td>
                                 </tr>
                             `;
@@ -904,15 +1013,15 @@
                         supportRegistryBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">No support tickets.</td></tr>`;
                     } else {
                         support.forEach(s => {
-                            const sClass = s.status === 'Open' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-700';
+                            const sClass = s.status === 'Open' ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-gray-100 text-gray-700 border-gray-200';
                             supportRegistryBody.innerHTML += `
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-3 text-sm font-medium text-gray-900">${s.id}</td>
                                     <td class="px-6 py-3 text-sm text-gray-800">${s.userId}</td>
-                                    <td class="px-6 py-3 text-sm text-gray-500">${s.subject}</td>
-                                    <td class="px-6 py-3"><span class="px-2 py-1 text-[10px] font-bold uppercase rounded-full ${sClass}">${s.status}</span></td>
+                                    <td class="px-6 py-3 text-sm text-gray-500 truncate max-w-[200px]">${s.subject}</td>
+                                    <td class="px-6 py-3"><span class="px-2 py-1 text-[10px] font-bold uppercase rounded-full border ${sClass}">${s.status}</span></td>
                                     <td class="px-6 py-3 text-right">
-                                        <button onclick="closeTicket('${s.id}')" class="text-xs font-semibold text-brand-600 hover:text-brand-800 transition-colors">Close Ticket</button>
+                                        ${s.status === 'Open' ? `<button onclick="closeTicket('${s.id}')" class="text-xs font-semibold text-brand-600 hover:text-brand-800 transition-colors focus:outline-none">Mark Resolved</button>` : ''}
                                     </td>
                                 </tr>
                             `;
@@ -985,7 +1094,6 @@
             };
 
             window.toggleUserStatus = function(userId) {
-                const currentUser = getCurrentUser();
                 if (userId === currentUser.id) {
                     alert("Action Denied: You cannot suspend the active Administrator account.");
                     return;
@@ -1025,8 +1133,123 @@
                 }
             };
 
+            // =====================================
+            // ADMIN DISPUTE INVESTIGATION WORKSPACE
+            // =====================================
+
+            const adminDisputeModal = document.getElementById('adminDisputeModal');
+            
+            const renderAdminChat = (messagesArray) => {
+                const chatContainer = document.getElementById('adminChatContainer');
+                chatContainer.innerHTML = '';
+                
+                if (!messagesArray || messagesArray.length === 0) {
+                    chatContainer.innerHTML = `<div class="text-center text-sm text-gray-500 py-10 italic">No communication logged in this escrow.</div>`;
+                    return;
+                }
+
+                messagesArray.forEach(msg => {
+                    const msgTime = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    if (msg.isAdmin) {
+                        chatContainer.innerHTML += `
+                            <div class="flex flex-col items-center my-4 w-full">
+                                <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-2 rounded-xl text-sm max-w-[85%] text-center shadow-sm">
+                                    <span class="font-bold block text-xs uppercase tracking-wider mb-1"><i data-lucide="shield-alert" class="w-3 h-3 inline"></i> System Admin</span>
+                                    ${msg.text}
+                                </div>
+                                <span class="text-[10px] text-gray-400 mt-1">${msgTime}</span>
+                            </div>
+                        `;
+                    } else {
+                        // For Admin view, we align everything left but label it clearly
+                        const isBuyer = msg.senderId === window.currentDisputeBuyerId;
+                        const label = isBuyer ? 'Buyer' : 'Seller';
+                        const labelColor = isBuyer ? 'text-blue-600' : 'text-purple-600';
+                        const bubbleColor = isBuyer ? 'bg-blue-50 border-blue-100' : 'bg-purple-50 border-purple-100';
+
+                        chatContainer.innerHTML += `
+                            <div class="flex flex-col items-start w-full mb-3">
+                                <span class="text-[10px] font-bold ${labelColor} mb-1 px-1 uppercase tracking-wider">${label} (${msg.senderId})</span>
+                                <div class="px-4 py-2.5 max-w-[85%] sm:max-w-[70%] text-sm shadow-sm ${bubbleColor} border rounded-xl text-gray-800">
+                                    ${msg.text}
+                                </div>
+                                <span class="text-[10px] text-gray-400 mt-1 px-1">${msgTime}</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                lucide.createIcons();
+            };
+
+            window.openAdminDisputeInvestigator = function(id) {
+                const txs = loadData(DB_KEYS.TRANSACTIONS);
+                const tx = txs.find(t => t.id === id);
+                if(!tx) return;
+
+                // Set Globals for action referencing
+                document.getElementById('adminChatEscrowId').value = tx.id;
+                window.currentDisputeBuyerId = tx.buyer;
+
+                // Hydrate details
+                document.getElementById('adminDisputeId').textContent = tx.id;
+                document.getElementById('adminDisputeTitle').textContent = tx.title;
+                document.getElementById('adminDisputeAmount').textContent = formatter.format(tx.amount);
+                
+                const reasonStr = tx.disputeDetails ? tx.disputeDetails.reason : 'No reason provided';
+                const raisedByStr = tx.disputeDetails ? tx.disputeDetails.raisedBy : 'Unknown';
+                
+                document.getElementById('adminDisputeReason').textContent = reasonStr;
+                document.getElementById('adminDisputeRaisedBy').textContent = `Raised by: ${raisedByStr.charAt(0).toUpperCase() + raisedByStr.slice(1)}`;
+
+                // Load Chat
+                renderAdminChat(tx.messages);
+
+                // Setup Resolution Buttons
+                const btnRefund = document.getElementById('btnResolveRefund');
+                const btnPay = document.getElementById('btnResolvePay');
+                
+                btnRefund.onclick = () => resolveDispute(tx.id, 'Buyer');
+                btnPay.onclick = () => resolveDispute(tx.id, 'Seller');
+
+                adminDisputeModal.classList.remove('hidden');
+            };
+
+            // Admin Chat Injection
+            document.getElementById('adminChatForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const input = document.getElementById('adminChatInput');
+                const text = input.value.trim();
+                const escId = document.getElementById('adminChatEscrowId').value;
+
+                if(!text || !escId) return;
+
+                const transactions = loadData(DB_KEYS.TRANSACTIONS) || [];
+                const tIdx = transactions.findIndex(tx => tx.id === escId);
+                
+                if(tIdx !== -1) {
+                    const newMsg = {
+                        id: generateId('MSG'),
+                        senderId: currentUser.id,
+                        text: text,
+                        timestamp: new Date().toISOString(),
+                        isAdmin: true
+                    };
+
+                    if(!transactions[tIdx].messages) transactions[tIdx].messages = [];
+                    transactions[tIdx].messages.push(newMsg);
+                    
+                    saveData(DB_KEYS.TRANSACTIONS, transactions);
+                    
+                    renderAdminChat(transactions[tIdx].messages);
+                    input.value = '';
+                }
+            });
+
             window.resolveDispute = function(txId, winner) {
-                if(!confirm(`Are you sure you want to resolve this in favor of the ${winner}?`)) return;
+                if(!confirm(`WARNING: Are you sure you want to resolve this dispute and transfer funds to the ${winner}? This action is final.`)) return;
                 
                 const txs = loadData(DB_KEYS.TRANSACTIONS);
                 const tx = txs.find(t => t.id === txId);
@@ -1046,9 +1269,21 @@
                         w.history.push({id: generateId('TXN'), type: 'Credit', amount: net, description: 'Dispute Resolution Payout', date: new Date().toISOString()});
                         tx.status = 'Completed';
                     }
+                    
+                    // Final system message
+                    if(!tx.messages) tx.messages = [];
+                    tx.messages.push({
+                        id: generateId('MSG'),
+                        senderId: currentUser.id,
+                        text: `This dispute has been resolved in favor of the ${winner}. Funds have been released. This escrow is now closed.`,
+                        timestamp: new Date().toISOString(),
+                        isAdmin: true
+                    });
+
                     saveData(DB_KEYS.TRANSACTIONS, txs);
                     saveData(DB_KEYS.WALLETS, wallets);
                     alert(`Dispute resolved. Funds transferred to ${winner}.`);
+                    adminDisputeModal.classList.add('hidden');
                     loadDashboardData();
                 }
             };
